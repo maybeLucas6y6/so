@@ -1,0 +1,1043 @@
+<!DocType html>
+<html lang="ro">
+<head>
+  <title>Disciplina SO - Laborator #1 (suport online)</title>
+  <link rel="stylesheet" type="text/css" href="../my_styles.css" />
+    <meta name="description" content="Sisteme de operare - curs și laborator - suport electronic">
+    <meta name="keywords"    content="Operating Systems, Sisteme de operare, Unix, Linux, FII Iași, infoiasi, Cristian Vidrașcu">
+    <meta name="author"      content="Cristian Vidrașcu">
+    <meta charset="utf-8"><!-- pentru diacritice -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<body>
+
+<h2><font color="blue">Laborator #1 :</font> suport online &nbsp; ( Îndrumar de laborator )</h2>
+
+<b>Sumar:</b>
+<h3>I) <a href="#sec_1" class="button_href">Lucrul la linia de comandă în Linux, cu comenzi simple (partea întâia)</a></h3>
+<h4>I.1) Recap: <a href="#sec_1a" class="button_href">Reamintirea unor cunoștințe dobândite în lecția practică despre comenzi simple</a></h4>
+<h4>I.2) Exemplificări: <a href="#sec_1b" class="button_href">Exemple de utilizare a unor comenzi simple (exerciții rezolvate)</a></h4>
+
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:5px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1">I) <span class="stil_sumar">Lucrul la linia de comandă în Linux, cu comenzi simple (partea întâia)</span> :</p>
+
+<div style="display:block;" class="stil_prezentare">
+<p>
+<b>Prolog:</b>
+înainte de a începe studiul comenzilor disponibile pentru lucrul la linia de comandă în Linux,
+revedeți prezentarea introductivă despre sistemele de operare din familia UNIX, și în particular despre Linux, disponibilă
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P1.1_intro_web-ro.pdf">aici</a>.
+</p>
+<p>
+<font color="red">Recomandare:</font>
+<button onclick="myToggle('lab1_prolog_bib')">Show / Hide the recommendation</button>
+<div id="lab1_prolog_bib" class="stil_bibliografie_suplimentara">
+Nu vă rezumați doar la consultarea prezentării PPT indicate  mai sus;
+citiți și subcapitolele corespunzătoare din cartea recomandată pentru componenta practică:
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/ManualID-SO_chapters/intro.pdf">Cap. 1, §1.1</a>
+și <a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/ManualID-SO_chapters/distros.pdf">Cap. 1, §1.2</a>.
+<!--
+<br><br>
+<i>Notă</i>: o versiune mai veche a acestor materiale, în format HTML, este disponibilă spre consultare
+<a target="_blank" href="http://students.info.uaic.ro/~so/labs/intro.htm">aici</a>
+și, respectiv, <a target="_blank" href="http://students.info.uaic.ro/~so/labs/LINUX-distros.pdf">aici</a>.
+-->
+</div>
+</p>
+</div>
+
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1a">I.1) <span class="stil_recap">Reamintirea unor cunoștințe dobândite în lecția practică despre comenzi simple</span> :</p>
+
+<b>Informații despre comenzi simple pentru lucrul la linia de comandă în Linux:</b>
+<!--button onclick="myToggle('lab1_recap')">Hide / Show the presentation</button-->
+<div id="lab1_recap" style="display:block;" class="stil_prezentare">
+<p>
+(Re)citiți prezentarea cu lecția practică despre comenzi de bază și sisteme de fișiere în Linux - partea 1-a, disponibilă
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P1.2_commands1_web-ro.pdf">aici</a>.
+</p>
+<p>
+<font color="red">Recomandare:</font>
+<button onclick="myToggle('lab1_recap_bib')">Show / Hide the recommendation</button>
+<div id="lab1_recap_bib" class="stil_bibliografie_suplimentara">
+Nu vă rezumați doar la consultarea prezentării PPT indicate  mai sus;
+citiți și subcapitolele corespunzătoare din cartea recomandată pentru componenta practică:
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/ManualID-SO_chapters/command.pdf">Cap. 2, §2.1</a>
+și <a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/ManualID-SO_chapters/filesys.pdf">Cap. 2, §2.2</a>.
+<!--
+<br><br>
+<i>Notă</i>: o versiune mai veche a acestor materiale, în format HTML, este disponibilă spre consultare
+<a target="_blank" href="http://students.info.uaic.ro/~so/labs/command.htm">aici</a>
+și, respectiv, <a target="_blank" href="http://students.info.uaic.ro/~so/labs/filesys.htm">aici</a>.
+-->
+</div>
+</p>
+</div>
+
+<br><br>
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:3px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1b">I.2) <span class="stil_ex_rezolvate">Exemple de utilizare a unor comenzi simple (exerciții rezolvate)</span> :</p>
+
+<ol>
+
+<li><!-- Problema: lab1_ex0.0-new ---------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[Accessing the man pages]</span>
+<!-- Accesarea paginilor de manual: comenzile man, whatis, ș.a. -->
+&nbsp; <b>Exemplificarea comenzilor pentru consultarea paginilor de manual</b>.
+<br>
+Paginile de manual conțin documentația despre comenzile externe disponibile în Linux,
+precum și despre funcțiile C din API-ul POSIX și cele din biblioteca standard de C, plus alte documentații, organizate pe secțiuni.
+<ul>
+<li><b>i)</b> Comanda <a target="_blank" href="https://man7.org/linux/man-pages/man1/whatis.1.html"><code>whatis</code></a>
+  ne permite să aflăm dacă există vreo comandă sau vreo funcție cu un anumit nume specificat.
+  <br>
+  Spre exemplu, dacă apelăm comanda cu argumentul "write", în felul următor:
+  <br>
+  prompt> <code class="stil_cmdBash"> whatis write</code>
+  <br>
+  atunci outputul afișat pe ecran de această comandă va fi următorul:
+<pre class="stil_output">
+write (1)            - send a message to another user
+write (2)            - write to a file descriptor
+</pre>
+  Prin urmare, astfel aflăm că există o comandă cu numele write, deoarece "(1)" indică secțiunea în care se găsește prima semnificație găsită pentru write,
+  și cunoaștem faptul că secțiunea 1 a paginilor de manual conține documentația despre comenzile uzuale (doar cele externe) accesibile utilizatorilor obișnuiți.
+  Iar a doua semnificație găsită pentru write este în secțiunea 2, ceea ce ne indică faptul că există o funcție în API-ul POSIX cu numele write
+  (deoarece cunoaștem faptul că secțiunea 2 a paginilor de manual conține documentația despre funcțiile C din API-ul POSIX).
+  În plus, scurta descriere ce însoțește fiecare dintre cele două semnificații găsite pentru write, ne dă o indicație asupra funcționalității
+  pe care-o oferă comanda write, respectiv funcția write.
+  <br>
+  Iată și un alt exemplu:
+  <br>
+  prompt> <code class="stil_cmdBash"> whatis mkdir</code>
+  <br>
+<pre class="stil_output">
+mkdir (1)            - make directories
+mkdir (2)            - create a directory
+</pre>
+   Astfel aflăm că există o comandă uzuală numită mkdir, precum și o funcție cu același nume în API-ul POSIX.
+   În plus, ni se dă și o indicație asupra funcționalității oferite de către acestea, prin scurta descriere ce le însoțește.
+  <br><br>
+</li>
+
+<li><b>ii)</b> Comanda <a target="_blank" href="https://man7.org/linux/man-pages/man1/man.1.html"><code>man</code></a>
+  ne permite să consultăm pagina de manual, dintr-o anumită secțiune, pentru un anumit cuvânt, reprezentând numele unei comenzi sau al unei funcții.
+  <br>
+  Spre exemplu, dacă apelăm comanda cu argumentul "mkdir", în felul următor:
+  <br>
+  prompt> <code class="stil_cmdBash"> man 1 mkdir</code>
+  <br>
+  (sau putem tasta doar <code class="stil_cmdBash"> man mkdir</code> , caz în care se va selecta prima secțiune de manual ce conține acel cuvânt,
+  adică în cazul de față secțiunea 1),
+  <br>
+  atunci outputul afișat pe ecran de această comandă este de forma următoare:
+<button onclick="myToggle('lab1_ex0-0a')">Show / Hide the output</button>
+<pre id="lab1_ex0-0a" class="stil_output">
+MKDIR(1)                                                                              User Commands                                                              MKDIR(1)
+
+NAME
+       mkdir - make directories
+
+SYNOPSIS
+       mkdir [OPTION]... DIRECTORY...
+
+DESCRIPTION
+       Create the DIRECTORY(ies), if they do not already exist.
+
+       Mandatory arguments to long options are mandatory for short options too.
+
+       -m, --mode=MODE
+              set file mode (as in chmod), not a=rwx - umask
+
+       -p, --parents
+              no error if existing, make parent directories as needed
+
+       -v, --verbose
+              print a message for each created directory
+
+       -Z, --context=CTX
+              set the SELinux security context of each created directory to CTX
+
+       --help display this help and exit
+
+       --version
+              output version information and exit
+
+AUTHOR
+       Written by David MacKenzie.
+
+REPORTING BUGS
+       Report mkdir bugs to bug-coreutils@gnu.org
+       GNU coreutils home page: &lt;http://www.gnu.org/software/coreutils/>
+       General help using GNU software: &lt;http://www.gnu.org/gethelp/>
+       Report mkdir translation bugs to &lt;http://translationproject.org/team/>
+
+COPYRIGHT
+       Copyright © 2010 Free Software Foundation, Inc.  License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html>.
+       This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+
+SEE ALSO
+       mkdir(2)
+
+       The full documentation for mkdir is maintained as a Texinfo manual.  If the info and mkdir programs are properly installed at your site, the command
+
+              info coreutils 'mkdir invocation'
+
+       should give you access to the complete manual.
+
+GNU coreutils 8.5                                                                      April 2010                                                                MKDIR(1)
+ Manual page mkdir(1) line 1/57 (END)
+</pre>
+  <br>Din acest output, putem observa cum arată structura unei pagini de manual ce documentează o comandă, și anume are următoarele "paragrafe":
+  <ul>
+  <li>NAME -- conține o linie de text, cu numele comenzii și o scurtă descriere a funcționalității oferite
+  (este chiar descrierea afișată de comanda <code>whatis</code>);</li>
+  <li>SYNOPSIS -- descrie sintaxa comenzii, adică parametrii liniei de comandă prin care se poate apela comanda respectivă;</li>
+  <li>DESCRIPTION -- descrie semnificația parametrilor liniei de comandă, atât cei de tip opțiuni, cât și a celor reprezentând argumentele
+  specifice ale comenzii, în cazul de față numele directoarelor ce se vor crea;</li>
+  <li>SEE ALSO -- enumeră alte pagini de manual ce conțin documentația unor comenzi sau funcții ce oferă funcționalități corelate cu cea a comenzii de față.</li>
+  <li>Mai puteți observa și alte "paragrafe", dar acestea au informații mai puțin relevante.</li>
+  </ul>
+  <br>
+  <div class="stil_observatie_level0"><i>Observație</i>: comanda <code>man</code> este de fapt un <i>pipeline</i> (un lanț de comenzi),
+  în care comenzii <code>less</code> îi revine sarcina efectivă de afișare pe ecran a conținutului generat de restul <i>pipeline</i>-ului.
+  Ca atare, pentru a interacționa cu conținutul afișat de o comandă <code>man</code>,
+  putem folosi toate tastele ce au asociate 'comenzi de navigare', descrise în documentația comenzii <code>less</code>.
+  <br><br>
+  Voi aminti aici doar câteva dintre aceste 'comenzi de navigare' disponibile în comanda <code>less</code>:
+  <br>i) Pentru a ieși din modul de afișare a unei pagini de manual, se apasă tasta Q.
+  <br>ii) Pentru a naviga "în sus și în jos" atunci când informațiile din pagina respectivă "ocupă" mai mult de un ecran,
+  se folosesc fie tastele Up (săgeată sus) și Down (săgeată jos) (pentru a trece la linia următoare),
+  fie tastele PgUp/PgDn (pentru a trece la ecranul următor). Alte taste pentru navigare mai sunt:
+  tasta g (sau tasta &lt;) pentru a reveni la începutul fișierului afișat, respectiv tasta G (sau tasta &gt;) pentru a ajunge la finalul fișierului.
+  <br>iii) Putem căuta cuvinte (inclusiv șabloane gen expresii regulate)
+  și putem naviga la prima apariție a cuvântului căutat, apăsând tasta '/' urmată imediat de cuvântul căutat plus ENTER,
+  cum ar fi de exemplu numele unui "paragraf", sau orice altceva; dacă sunt mai multe apariții ale acelui cuvânt în pagina de manual,
+  vor fi evidențiate toate aparițiile cuvântului în text, prin schimbarea culorii de fundal a fiecărei apariții.
+  Și putem naviga de la o apariție la alta a cuvântului căutat în text apăsând în mod repetat tasta n.
+  Respectiv, cu tasta N apăsată în mod repetat, putem să ne întoarcem înapoi de la o apariție la alta.
+  <br><br>
+  <i>Recomandare</i>: pentru informații suplimentare referitoare la alte facilități de navigare/căutare/etc. prin pagina de manual afișată,
+  consultați documentația comenzii <code>less</code>. Sau puteți apăsa tasta h, în timp ce este activă comanda <code>less</code> (i.e.,
+  în timp ce vizualizați un text cu ajutorul comenzii <code>less</code>), pentru a obține un help cu toate tastele și 'comenzile' asociate lor.
+  </div>
+  <br><br>
+  Pentru a vedea și care este structura unei pagini ce documentează o funcție C, vom da drept exemplu:
+  <br>
+  prompt> <code class="stil_cmdBash"> man 2 mkdir</code>
+  <br>
+  (aici nu putem tasta doar <code class="stil_cmdBash"> man mkdir</code> , deoarece s-ar selecta prima secțiune de manual ce conține acel cuvânt,
+  adică în cazul de față secțiunea 1, care nu reprezintă ceea ce ne interesează),
+  <br>
+  atunci outputul afișat pe ecran de această comandă este de forma următoare:
+<button onclick="myToggle('lab1_ex0-0b')">Show / Hide the output</button>
+<pre id="lab1_ex0-0b" class="stil_output">
+MKDIR(2)                                                           Linux Programmer's Manual                                                          MKDIR(2)
+
+NAME
+       mkdir - create a directory
+
+SYNOPSIS
+       #include &lt;sys/stat.h>
+       #include &lt;sys/types.h>
+
+       int mkdir(const char *pathname, mode_t mode);
+
+DESCRIPTION
+       mkdir() attempts to create a directory named pathname.
+
+       The  argument  mode specifies the permissions to use.  It is modified by the process's umask in the usual way: the permissions of the created directory
+       are (mode &amp; ~umask &amp; 0777).  Other mode bits of the created directory depend on the operating system.  For Linux, see below.
+
+       The newly created directory will be owned by the effective user ID of the process.  If the directory containing the file has the set-group-ID bit  set,
+       or  if  the  file  system  is mounted with BSD group semantics (mount -o bsdgroups or, synonymously mount -o grpid), the new directory will inherit the
+       group ownership from its parent; otherwise it will be owned by the effective group ID of the process.
+
+       If the parent directory has the set-group-ID bit set then so will the newly created directory.
+
+RETURN VALUE
+       mkdir() returns zero on success, or -1 if an error occurred (in which case, errno is set appropriately).
+
+ERRORS
+       EACCES The parent directory does not allow write permission to the process, or one of the directories in pathname  did  not  allow  search  permission.
+              (See also path_resolution(7).)
+
+       EEXIST pathname already exists (not necessarily as a directory).  This includes the case where pathname is a symbolic link, dangling or not.
+
+       EFAULT pathname points outside your accessible address space.
+
+       ELOOP  Too many symbolic links were encountered in resolving pathname.
+
+       EMLINK The number of links to the parent directory would exceed LINK_MAX.
+
+       ENAMETOOLONG
+              pathname was too long.
+
+       ENOENT A directory component in pathname does not exist or is a dangling symbolic link.
+
+       ENOMEM Insufficient kernel memory was available.
+
+       ENOSPC The device containing pathname has no room for the new directory.
+
+       ENOSPC The new directory cannot be created because the user's disk quota is exhausted.
+
+       ENOTDIR
+              A component used as a directory in pathname is not, in fact, a directory.
+
+       EPERM  The file system containing pathname does not support the creation of directories.
+
+       EROFS  pathname refers to a file on a read-only file system.
+
+CONFORMING TO
+       SVr4, BSD, POSIX.1-2001.
+
+NOTES
+       Under  Linux apart from the permission bits, only the S_ISVTX mode bit is honored.  That is, under Linux the created directory actually gets mode (mode
+       &amp; ~umask &amp; 01777).  See also stat(2).
+
+       There are many infelicities in the protocol underlying NFS.  Some of these affect mkdir().
+
+SEE ALSO
+       mkdir(1), chmod(2), chown(2), mkdirat(2), mknod(2), mount(2), rmdir(2), stat(2), umask(2), unlink(2), path_resolution(7)
+
+COLOPHON
+       This page is part of release 3.27 of the Linux man-pages project.  A description of the project, and information about reporting bugs, can be found  at
+       http://www.kernel.org/doc/man-pages/.
+
+Linux                                                                     2010-06-26                                                                  MKDIR(2)
+ Manual page mkdir(2) line 22/77 (END)
+</pre>
+  <br>Din acest output, putem observa cum arată structura unei pagini de manual ce documentează o funcție C din API-ul POSIX (similar arată și structura paginilor ce documentează funcții C din biblioteca standard de C ), și anume are următoarele "paragrafe":
+  <ul>
+  <li>NAME -- conține o linie de text, cu numele funcției și o scurtă descriere a funcționalității implementate în acea funcție
+  (este chiar descrierea afișată de comanda <code>whatis</code>);</li>
+  <li>SYNOPSIS -- descrie sintaxa funcției, adică prototipul funcției, plus lista fișierelor header care trebuie incluse pentru a se putea apela funcția respectivă;</li>
+  <li>DESCRIPTION -- descrie semnificația argumentelor funcției, precum și funcționalitatea implementată în acea funcție;</li>
+  <li>RETURN VALUE -- descrie semnificația valorii returnate de funcție, inclusiv în caz de eroare;</li>
+  <li>ERRORS -- descrie lista unor constante simbolice, a căror valoare numerică este stocată în variabila de sistem <tt>errno</tt> în caz de
+  terminare cu eroare a apelului funcției, precum și motivele ce cauzează terminarea cu eroare, asociate acelor constante simbolice;</li>
+  <li>NOTES -- observații suplimentare despre funcția respectivă;</li>
+  <li>SEE ALSO -- enumeră alte pagini de manual ce conțin documentația unor comenzi sau funcții ce oferă funcționalități corelate cu cea a funcției de față.</li>
+  <li>Mai puteți observa și alte "paragrafe", dar acestea au informații mai puțin relevante.</li>
+  </ul>
+  <br>
+
+  <div class="stil_observatie_level0"><i>Explicații ale câtorva concepte de bază</i> (ce vor fi reîntâlnite și în cursurile teoretice) :
+  <dl>
+	  <dt><b>Biblioteca standard de C</b>, referită pe scurt prin denumirea <tt>libc</tt>:</dt>
+      <dd>Aceasta este o bibliotecă de funcții standard ce pot fi apelate din toate programele scrise în limbajul C (și uneori din programe scrise în alte limbaje de programare), indiferent pentru ce platformă sunt compilate acele programe, deoarece biblioteca <tt>libc</tt> are implementări pentru toate platformele pentru care avem compilatoare de C (e.g., Windows, Linux și orice alt sistem UNIX).
+	  Pentru fiecare platformă, pot exista chiar mai multe implementări ale bibliotecii <tt>libc</tt>.
+      <br>
+	  Spre exemplu, pentru platforma Linux cea mai populară este implementarea GNU C Library, referită pe scurt prin denumirea <tt>glibc</tt>. 
+      Pentru a afla mai multe informații despre implementările bibliotecii standard de C pentru platforma Linux, puteți folosi comanda <code class="stil_cmdBash">man 7 libc</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man7/libc.7.html">aici</a>.
+      <br><br>
+      </dd>
+	  <dt><b>Apelurile de sistem</b> furnizate de un sistem de operare:</dt>
+      <dd>Acestea sunt rutine implementate în nucleul unui sistem de operare ce implementează diverse servicii oferite de acel sistem de operare (și ele sunt executate în modul privilegiat al procesorului -- așa-numitul <i>kernel-mode</i>).
+	  Programele ce rulează pe acel sistem de operare (în modul neprivilegiat al procesorului -- așa-numitul <i>user-mode</i>) pot beneficia de serviciile respective invocând rutina (apelul de sistem) ce implementează serviciul dorit.
+      Modul exact de invocare a unui apel de sistem depinde de sistemul de operare respectiv.
+      <br>
+	  Astfel, în cazul platformei Linux, apelurile de sistem sunt invocate în mod indirect, prin intermediul unor funcții <i>wrapper</i> definite în biblioteca <tt>glibc</tt>, care execută unele operații suplimentare înainte de a comuta procesorul în modul privilegiat pentru a executa apelul de sistem propriu-zis.
+      Pentru a afla mai multe informații despre apelurile de sistem furnizate de nucleul Linux (și funcțiile <i>wrapper</i> asociate lor), puteți folosi comanda <code class="stil_cmdBash">man 2 syscalls</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man2/syscalls.2.html">aici</a>.
+      <br>
+	  Setul de apeluri de sistem furnizat de un sistem de operare este denumit API-ul (i.e., interfața de programare a aplicațiilor) acelui sistem.
+      <br><br>
+      </dd>
+	  <dt><b>Standarde</b> ale API-ului (i.e., setul de apeluri de sistem) furnizat de un sistem de operare din familia UNIX:</dt>
+      <dd>Acestea sunt specificații ale prototipurilor funcțiilor ce formează acel API.
+      <br>
+      Astfel, în structura unei pagini de manual precum cea exemplificată mai sus, "paragraful" CONFORMING TO se referă la standardul (sau standardele) ce conține ca specificație funcția respectivă cu prototipul de acea formă.
+      <br>
+      Pe parcursul dezvoltării sistemelor UNIX, au existat și alte standarde apărute înaintea standardului POSIX, și toate aceste standarde au cunoscut diverse versiuni de elaborare a specificațiilor respective.
+      Pentru a afla mai multe informații despre standardele existente puteți folosi comanda <code class="stil_cmdBash">man 7 standards</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man7/standards.7.html">aici</a>.
+	  </dd>
+  </dl>
+  </div>
+  <br><br>
+</li>
+
+<li><b>iii)</b> Comanda <code>which</code> <!-- NU exista: <a target="_blank" href="https://man7.org/linux/man-pages/man1/which.1.html"><tt>which</tt></a> -->
+  ne permite să aflăm calea absolută a fișierului ce conține o comandă externă,
+  dacă aceasta este accesibilă (prin intermediul variabilei de mediu <tt>PATH</tt>, despre care vom discuta mai târziu).
+  <br>
+  Spre exemplu, dacă apelăm comanda cu argumentul "mkdir", în felul următor:
+  <br>
+  prompt> <code class="stil_cmdBash"> which mkdir</code>
+  <br>
+  atunci outputul afișat pe ecran de această comandă este următorul:
+<pre class="stil_output">
+/bin/mkdir
+</pre>
+  În concluzie, programul executabil ce implementează comanda mkdir este localizat la calea absolută <tt>/bin/mkdir</tt>.
+  <br><br>
+</li>
+
+<li><b>iv)</b> Comanda <a target="_blank" href="https://man7.org/linux/man-pages/man1/whereis.1.html"><code>whereis</code></a>
+  ne permite să aflăm calea absolută a fișierului executabil ce conține o comandă externă, cea a codului sursă a acelei comenzi (dacă poate fi localizat pe sistemul respectiv),
+  precum și cele ale paginilor de documentație pentru semnificațiile posibile ale numelui comenzii.
+  <br>
+  Spre exemplu, dacă apelăm comanda cu argumentul "mkdir", în felul următor:
+  <br>
+  prompt> <code class="stil_cmdBash"> whereis mkdir</code>
+  <br>
+  atunci outputul afișat pe ecran de această comandă este următorul:
+<pre class="stil_output">
+mkdir: /bin/mkdir /usr/share/man/man2/mkdir.2.gz /usr/share/man/man1/mkdir.1.gz
+</pre>
+  În acest caz, <tt>/bin/mkdir</tt> este calea absolută a programului executabil ce implementează comanda mkdir, codul sursă nu a fost găsit,
+  iar celelalte două căi absolute descriu arhivele în format gzip ce stochează pe disc conținutul celor două pagini de manual pentru mkdir
+  (comanda mkdir, din secțiunea 1, și respectiv funcția mkdir, din secțiunea 2 a manualului).
+  <br><br>
+</li>
+
+<li><b>v)</b> Comanda <a target="_blank" href="https://man7.org/linux/man-pages/man1/apropos.1.html"><code>apropos</code></a>
+  ne vine în ajutor atunci când am uitat numele vreunei comenzi sau funcții de care avem nevoie, permițându-ne să căutăm
+  aparițiile unui cuvânt (sau a mai multor cuvinte) prin descrierile sumare cuprinse în "paragraful" NAME ale tuturor paginilor de manual.
+  <br>
+  Succesul căutării cu comanda <code>apropos</code> va depinde esențial de gradul de relevanță al cuvintelor pe care le alegem pentru căutare,
+  similar cu ceea ce se întâmplă în cazul căutărilor pe motorul de căutare Google, sau altele asemănătoare.
+  <br>
+  Spre exemplu, dacă apelăm comanda cu verbul a scrie ("write"), în felul următor:
+  <br>
+  prompt> <code class="stil_cmdBash"> apropos write</code>
+  <br>
+  atunci outputul afișat pe ecran de această comandă va conține o listă numeroasă de rezultate.
+  Apoi va trebui să inspectăm vizual fiecare rezultat din listă și să vedem dacă se referă la comanda sau funcția care ne interesa.
+  Eventual, mai putem restrânge cazurile analizate, uitându-ne doar la rezultatele ce aparțin de secțiunea de manual ce ne interesează
+  (1 - pentru comenzi, 2 - pentru funcții din API-ul POSIX, ș.a.m.d.).
+  <br><br>
+  Căutarea ar putea fi mai eficientă dacă, drept cuvinte ce ar putea apare în descrierea funcționalității căutate, am folosi cuvinte
+  ce sunt mai puțin generale, nu cum este cazul verbului a scrie ("write").
+  <br>
+  Spre exemplu, să spunem că am uitat cum se numește comanda care copie fișiere. Am putea căuta cuvintele "copy" și "file", astfel:
+  <br>
+  prompt> <code class="stil_cmdBash"> apropos copy file</code>
+  <br>
+  Însă, și în acest caz lista de rezultate afișată va fi foarte mare.
+  Observăm că fiecare rezultat afișat conține cel puțin unul dintre cele două cuvinte căutate, dar nu neapărat pe amândouă.
+  <br>
+  Pentru a forța comanda <code>apropos</code> să returneze ca rezultate doar paginile de manual ce conțin simultan ambele cuvinte
+  în descrierea sumară din "paragraful" NAME, putem folosi opțiunea -a (sau --and ), astfel:
+  <br>
+  prompt> <code class="stil_cmdBash"> apropos -a copy file</code>
+  <br>
+  În acest caz, lista de rezultate obținută va fi mult mai scurtă:
+<button onclick="myToggle('lab1_ex0-0c')">Show / Hide the output</button>
+<pre id="lab1_ex0-0c" class="stil_output">
+cp (1)               - copy files and directories
+cpgr (8)             - copy with locking the given file to the password or group file
+cpio (1)             - copy files to and from archives
+cppw (8)             - copy with locking the given file to the password or group file
+dd (1)               - convert and copy a file
+dvicopy (1)          - produce modified copy of DVI file
+File::Copy (3perl)   - Copy files or filehandles
+File::Copy::Recursive (3pm) - Perl extension for recursively copying files and directories
+git-checkout-index (1) - Copy files from the index to the working tree
+install (1)          - copy files and set attributes
+objcopy (1)          - copy and translate object files
+odvicopy (1)         - produce modified copy of DVI file
+rcp (1)              - secure copy (remote file copy program)
+rsync (1)            - a fast, versatile, remote (and local) file-copying tool
+scp (1)              - secure copy (remote file copy program)
+xfs_copy (8)         - copy the contents of an XFS filesystem
+xfs_metadump (8)     - copy XFS filesystem metadata to a file
+</pre>
+  <br>
+  Acest lucru ne va ușura apoi inspecția vizuală a fiecărui rezultat din listă pe care o vom face
+  pentru a vedea dacă se referă la comanda sau funcția care ne interesa.
+  Bineînțeles, și în acest caz putem să restrângem și mai mult cazurile analizate,
+  uitându-ne doar la rezultatele ce aparțin de secțiunea de manual ce ne interesează.
+</li>
+</ul>
+
+<br>
+
+<div class="stil_observatie_level0">
+Pentru a încheia acest prim "exercițiu rezolvat", voi enumera în cele ce urmează cele 8 secțiuni în care sunt organizate paginile de manual.
+<ol>
+<li><b>Secțiunea 1</b> a manualului descrie comenzile și instrumentele disponibile utilizatorilor sistemului -- de exemplu, comenzi de manipulare a fișierelor, shell-uri, compilatoare, browsere web, vizualizatoare și editori de fișiere și imagini și așa mai departe.
+Pentru a afla mai multe informații despre secțiunea 1, puteți folosi comanda <code class="stil_cmdBash">man 1 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man1/intro.1.html">aici</a>.
+</li>
+<li><b>Secțiunea 2</b> a manualului descrie apelurile de sistem oferite de platforma Linux.
+Pentru a afla mai multe informații despre secțiunea 2, puteți folosi comanda <code class="stil_cmdBash">man 2 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man2/intro.2.html">aici</a>.
+</li>
+<li><b>Secțiunea 3</b> a manualului descrie toate funcțiile din biblioteca <tt>libc</tt>, cu excepția funcțiilor <i>wrapper</i> ale apelurilor de sistem (ce sunt descrise în secțiunea 2), plus funcții din alte biblioteci.
+Pentru a afla mai multe informații despre secțiunea , puteți folosi comanda <code class="stil_cmdBash">man 3 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man3/intro.3.html">aici</a>.
+</li>
+<li><b>Secțiunea 4</b> a manualului descrie fișierele speciale (<i>device files</i>, i.e. <tt>/dev/*</tt>).
+Pentru a afla mai multe informații despre secțiunea 4, puteți folosi comanda <code class="stil_cmdBash">man 4 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man4/intro.4.html">aici</a>.
+</li>
+<li><b>Secțiunea 5</b> a manualului descrie diverse formate de fișiere, precum și diverse tipuri de sisteme de fișiere.
+Pentru a afla mai multe informații despre secțiunea 5, puteți folosi comanda <code class="stil_cmdBash">man 5 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man5/intro.5.html">aici</a>.
+</li>
+<li><b>Secțiunea 6</b> a manualului descrie jocurile și micile programe amuzante disponibile pe sistem.
+Pentru a afla mai multe informații despre secțiunea 6, puteți folosi comanda <code class="stil_cmdBash">man 6 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man6/intro.6.html">aici</a>.
+</li>
+<li><b>Secțiunea 7</b> a manualului oferă o privire de ansamblu asupra a diverse subiecte și descrie convențiile și protocoalele, standardele pentru seturile de caractere, aspectul standard al sistemului de fișiere și alte lucruri diverse.
+Pentru a afla mai multe informații despre secțiunea 7, puteți folosi comanda <code class="stil_cmdBash">man 7 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man7/intro.7.html">aici</a>.
+</li>
+<li><b>Secțiunea 8</b> a manualului descrie comenzi utilizabile numai de către superutilizator, cum ar fi comenzile de administrare a sistemului, demonii și comenzile legate de hardware.
+Pentru a afla mai multe informații despre secțiunea 8, puteți folosi comanda <code class="stil_cmdBash">man 8 intro</code> pe sistemul Linux pe care lucrați, sau puteți accesa varianta online a acestei documentații, disponibilă <a target="_blank" href="https://man7.org/linux/man-pages/man8/intro.8.html">aici</a>.
+</li>
+</ol>
+</div>
+<br>
+</p>
+</li>
+
+
+<li><!-- Problema: lab1_ex0.1-new ---------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[Basic file operations #1]</span><!-- Operații de bază cu fișiere #1 -->
+&nbsp; <b>Exemplificare creare diferite tipuri de fișiere.</b>
+<br>
+Scrieți comenzile care creează următoarele tipuri de fișiere:
+<ul>
+  <li><b>i)</b> un subdirector numit <tt>d1</tt>, în directorul dvs. acasă;
+    două subdirectoare <tt>d2</tt> și <tt>d3</tt>, în subdirectorul <tt>d1</tt> creat anterior;
+    un subdirector <tt>d4</tt>, în subdirectorul <tt>d2</tt> creat anterior.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor <code>mkdir</code> și <code>ls</code>, disponibile pe
+    sistemul Linux pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 mkdir</code> și respectiv <code class="stil_cmdBash">man 1 ls</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/mkdir.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/ls.1.html">aici</a>.
+	Cât despre comanda <code>cd</code>, aceasta fiind comandă internă, puteți accesa documentația ei pe sistemul Linux
+    pe care lucrați folosind comanda <code class="stil_cmdBash">help cd</code> .
+    </p>
+    <button onclick="myToggle('lab1_ex0-1a')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-1a" class="stil_rezolvare">
+	<b>i)</b> O posibilă soluție ar fi secvența de comenzi următoare -- observați schimbarea repetată a directorului curent de lucru:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (E necesar doar dacă ați schimbat anterior, în sesiunea curentă, directorul curent de lucru.)
+  mkdir d1
+  cd d1
+  mkdir d2 d3
+  cd d2
+  mkdir d4
+  cd
+  ls -R d1  # pentru vizualizarea rezultatului operațiilor de creare </pre>
+	Altă soluție posibilă -- fără schimbarea repetată a directorului curent de lucru:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  mkdir d1 d1/d2 d1/d3 d1/d2/d4
+  ls -R d1/  # pentru vizualizarea rezultatului operațiilor de creare </pre>
+	Altă soluție posibilă -- observați folosirea opțiunii -p a comenzii <code>mkdir</code>:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  mkdir -p d1/d3
+  mkdir --parents d1/d2/d4
+  ls -R d1  # pentru vizualizarea rezultatului operațiilor de creare </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>ii)</b> mai multe fișiere obișnuite, astfel: <tt>p1.c</tt> și <tt>p2.c</tt>, în subdirectorul <tt>d1</tt> creat anterior;
+    <tt>p3.c</tt> și <tt>p4.cpp</tt>, în subdirectorul <tt>d2</tt> creat anterior;
+	<tt>p5.c</tt> și <tt>p6.h</tt>, în subdirectorul <tt>d4</tt> creat anterior.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor <code>touch</code> și <code>truncate</code>, disponibile pe
+    sistemul Linux pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 touch</code> și respectiv <code class="stil_cmdBash">man 1 truncate</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/touch.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/truncate.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-1b')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-1b" class="stil_rezolvare">
+    <b>ii)</b> Utilizând efectul secundar de creare al unui fișier nou pe care-l manifestă comanda <code>touch</code> în cazul specificării unui nume de fișier inexistent,
+	o posibilă soluție ar fi secvența de comenzi următoare:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  touch d1/p1.c d1/p2.c
+  touch d1/d2/p3.c d1/d2/p4.cpp d1/d2/d4/p5.c d1/d2/d4/p6.h
+  ls -lR d1/  # pentru vizualizarea rezultatului operațiilor de creare </pre>
+	<!-- Sau, cu o singură comandă touch:  touch d1/p1.c d1/p2.c d1/d2/p3.c d1/d2/p4.cpp d1/d2/d4/p5.c d1/d2/d4/p6.h -->
+    Similar ca la pct. i), putem rescrie echivalent secvențele de mai sus
+	prin schimbarea repetată a directorului curent de lucru. Încercați să le rescrieți singuri!
+	<br><br>
+	Sau, utilizând efectul secundar de creare al unui fișier nou pe care-l manifestă comanda <code>truncate</code> în cazul specificării unui nume de fișier inexistent,
+	o altă posibilă soluție ar fi secvența de comenzi următoare:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  truncate -s 0 d1/p1.c d1/p2.c
+  truncate -s 0 d1/d2/p3.c d1/d2/p4.cpp
+  truncate -s 0 d1/d2/d4/p5.c d1/d2/d4/p6.h
+  ls -lR d1/  # pentru vizualizarea rezultatului operațiilor de creare </pre>	
+    Evident, și în acest caz putem rescrie echivalent secvențele de mai sus	prin schimbarea repetată a directorului curent de lucru.
+	Încercați să le rescrieți singuri!
+    </div>
+	<br><br>
+  </li>
+  <li><b>iii)</b> folosind oricare dintre editoarele de texte amintite în lecție, creați un fișier obișnuit numit <tt>15lines.txt</tt>,
+    în subdirectorul <tt>d1</tt> creat anterior, și al cărui conținut să fie secvența numerelor de la 1 la 15,
+	scrise fiecare separat, pe câte o linie de text.
+	<br><br>
+    <button onclick="myToggle('lab1_ex0-1c')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-1c" class="stil_rezolvare">
+    <b>iii)</b> O posibilă soluție ar fi (în loc de mcedit puteți folosi orice alt editor de texte):
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  mcedit d1/15lines.txt </pre>
+    <i>Notă</i>: în cadrul ferestrei ce apare pe ecran, a editorului mcedit, introduceți secvența de numere specificată și apoi
+	salvați (apăsând tasta F2) și ieșiți din editor (apăsând tasta F10).
+<pre class="stil_codBash">  cat d1/15lines.txt   # pentru vizualizarea rezultatului </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>iv)</b> în subdirectorul <tt>d2</tt> creat anterior, creați un link hard, numit <tt>hardlnk1</tt>,
+    către fișierul <tt>15lines.txt</tt> creat anterior,
+    precum și un link simbolic, numit <tt>symlnk2</tt>, către același fișier.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii <code>ln</code>, disponibilă pe sistemul Linux
+    pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 ln</code> ,
+    sau accesați o variantă online a acestei documentații, disponibilă
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/ln.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-1d')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-1d" class="stil_rezolvare">
+    <b>iv)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  ln d1/15lines.txt d1/d2/hardlnk1
+  ln -s ../15lines.txt d1/d2/symlnk2 </pre>
+    <i>Notă</i>: observați că, în cazul link-urilor simbolice, calea relativă a target-ului trebuie specificată în raport cu directorul în care se va crea acel link simbolic!
+<pre class="stil_codBash">  ls -lR d1  # pentru vizualizarea rezultatului operațiilor de creare </pre>
+    <i>Notă</i>: acum ne putem referi la fișierul <tt>15lines.txt</tt> prin oricare dintre cele 3 nume (alias-uri) ale sale, spre exemplu:
+<pre class="stil_codBash">
+  cat d1/15lines.txt
+  cat d1/d2/hardlnk1
+  cat d1/d2/symlnk2 </pre>
+     </div>
+    <p><i>Concluzie</i>: orice fișier stocat pe disc are (cel puțin) un nume: fie exact un nume, fie mai multe nume (create ca link-uri hard către un fișier deja existent, de orice tip ar fi el).
+    Aceste nume sunt sinonime între ele, i.e. poate fi folosit oricare dintre ele pentru a identifica fisierul respectiv.
+    Practic, d.p.d.v. al sistemului de operare, nu există nicio diferență între numele cu care a fost creat fișierul respectiv pe disc
+	și numele suplimentare "adăugate" ulterior acelui fișier prin crearea de link-uri hard către acesta!
+	</p>
+  </li>
+</ul>
+</p>
+</li>
+
+<li><!-- Problema: lab1_ex0.2-new ---------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[Basic file operations #2]</span><!-- Operații de bază cu fișiere #2 -->
+&nbsp; <b>Exemplificare copiere, mutare și ștergere diferite tipuri de fișiere</b>.
+<br>
+<i>Notă</i>: în enunțurile de mai jos vom (re)utiliza o parte dintre fișierele și subdirectoarele create în exercițiul anterior!
+<br>
+Scrieți comenzile care realizează următoarele operații cu fișiere:
+<ul>
+  <li><b>i)</b> copiați subdirectorul <tt>d4</tt>, creat anterior, în subdirectorul <tt>d3</tt> creat anterior;
+    copiați fișierul <tt>p4.cpp</tt>, creat anterior, în subdirectorul <tt>d3</tt> creat anterior, astfel încât copia creată să se numească <tt>p4bis.cpp</tt>.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii <code>cp</code>, disponibilă pe sistemul Linux
+    pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 cp</code> ,
+    sau accesați o variantă online a acestei documentații, disponibilă
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/cp.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-2a')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-2a" class="stil_rezolvare">
+    <b>i)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  cp -R d1/d2/d4 d1/d3                 # -R: copiere recursivă, i.e. cu tot cu conținutul directorului
+  cp -i d1/d2/p4.cpp d1/d3/p4bis.cpp   # -i: cere confirmare în caz de suprascriere
+  ls -lR d1/   # pentru vizualizarea rezultatului operațiilor de copiere </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>ii)</b> mutați fișierul <tt>d1/d3/p4bis.cpp</tt>, creat la pasul anterior, în subdirectorul <tt>d1/d3/d4</tt>, păstrându-i numele nemodificat;
+    redenumiți fișierul <tt>d1/d3/d4/p5.c</tt>, creat la pasul anterior, în <tt>p5.cpp</tt>, fără a-i schimba locația (i.e., directorul în care se află);
+	mutați fișierul <tt>d1/d3/d4/p6.h</tt>, creat la pasul anterior, în subdirectorul <tt>d1/d2</tt>, schimbându-i și numele în <tt>p6bis.h</tt>.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii <code>mv</code>, disponibilă pe sistemul Linux
+    pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 mv</code> ,
+    sau accesați o variantă online a acestei documentații, disponibilă
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/mv.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-2b')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-2b" class="stil_rezolvare">
+    <b>ii)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  mv -i d1/d3/p4bis.cpp d1/d3/d4/      # -i: cere confirmare în caz de suprascriere
+  mv -i d1/d3/d4/p5.c d1/d3/d4/p5.cpp
+  mv -i d1/d3/d4/p6.h d1/d2/p6bis.h
+  ls -lR d1/   # pentru vizualizarea rezultatului operațiilor de mutare/redenumire </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>iii)</b> ștergeți subdirectorul <tt>d1/d3/d4</tt> creat anterior, inclusiv tot conținutul său.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor <code>rmdir</code> și <code>rm</code>, disponibile pe
+    sistemul Linux pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 rmdir</code> și respectiv <code class="stil_cmdBash">man 1 rm</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/rmdir.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/rm.1.html">aici</a>.
+	Cât despre comanda <code>cd</code>, aceasta fiind comandă internă, puteți accesa documentația ei pe sistemul Linux
+    pe care lucrați folosind comanda <code class="stil_cmdBash">help cd</code> .
+    </p>
+    <button onclick="myToggle('lab1_ex0-2c')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-2c" class="stil_rezolvare">
+    <b>iii)</b> O primă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  rmdir d1/d3/d4 </pre>
+    <i>Notă</i>: comanda <code>rmdir</code> va da eroare, spunând că directorul nu este gol.
+<pre class="stil_codBash">
+  ls -R d1/d3/d4   # ne uităm ce fișiere conține el, și le ștergem mai întâi pe acestea...
+  rm d1/d3/d4/p5.cpp
+  rm d1/d3/d4/...  # repetați acest pas și pentru celelalte fișiere care mai există, eventual, în acel director!
+  rmdir d1/d3/d4   # după ce-am golit directorul, îl putem șterge cu rmdir. </pre>
+    O altă soluție posibilă este folosind ștergerea recursivă:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  rm -R -i d1/d3/d4/  # -R: ștergere recursivă, -i: cere confirmare pentru fiecare fișier ce va fi șters </pre>
+    </div>
+  </li>
+</ul>
+</p>
+</li>
+
+<li><!-- Problema: lab1_ex0.3-new ---------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[Basic file operations #3]</span><!-- Operații de bază cu fișiere #3 -->
+&nbsp; <b>Exemplificare vizualizarea conținutului fișierelor text, folosind diverse comenzi de vizualizare</b>.
+<br>
+<i>Notă</i>: în enunțurile de mai jos vom (re)utiliza o parte dintre fișierele și subdirectoarele create în cele două exerciții anterioare!
+<br>
+Scrieți comenzile care realizează următoarele operații cu fișiere:
+<ul>
+  <li><b>i)</b> vizualizați conținutul fișierului <tt>d1/15lines.txt</tt>, creat anterior, afișat în ordinea naturală a liniilor de text
+    și, respectiv, în ordine inversată.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor cat și tac, disponibile pe sistemul Linux
+    pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 cat</code> și respectiv <code class="stil_cmdBash">man 1 tac</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/cat.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/tac.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-3a')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-3a" class="stil_rezolvare">
+    <b>i)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)    
+  cat d1/15lines.txt  # pentru ordinea naturală a liniilor de text din fișier
+  tac d1/15lines.txt  # pentru ordinea inversată </pre>
+    O altă soluție:
+<pre class="stil_codBash">  cat -n d1/15lines.txt   # liniile de text afișate sunt precedate de numărul de ordine al fiecăreia în fișier  </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>ii)</b> vizualizați fișierul <tt>/etc/passwd</tt>, ce conține informații despre conturile de utilizatori de pe sistemul pe care lucrați,
+	astfel încât afișarea să se facă cu pauză "la trecerea de la un ecran la altul";
+	repetați această operație, cu posibilitatea de a "naviga" în ambele sensuri.
+    <br>
+    <div class="stil_observatie_level0">
+	  <i>Observație</i>: "baza de date" despre conturile de utilizatori, i.e. fișierul <tt>/etc/passwd</tt>, conține linii de text conforme cu următorul șablon:
+      <div class="stil_output"><i>username</i> : x : <i>UID</i>-ul utilizatorului : <i>GID</i>-ul grupului primar de care aparține : <i>datele personale</i> ale utilizatorului : <i>home directory</i> : <i>login shell</i></div>
+    </div>
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor more și less, disponibile pe sistemul Linux
+    pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 more</code> și respectiv <code class="stil_cmdBash">man 1 less</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/more.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/less.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-3b')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-3b" class="stil_rezolvare">
+    <b>ii)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  more /etc/passwd
+
+       # Navigarea, într-o singură direcție, se face apăsând tasta SPACE pentru a trece la ecranul următor. Cu tasta Q se termină afișarea.
+
+
+  less /etc/passwd
+
+       # Navigarea, în ambele direcții, se face apăsând fie tastele Săgeată sus/jos (pentru a trece la linia următoare),
+       # fie tastele PgUp/PgDn (pentru a trece la ecranul următor). Cu tasta Q se finalizează execuția comenzii.
+       # Notă: pentru informații suplimentare referitoare la alte facilități de navigare/căutare/ș.a. prin conținutul afișat de comanda less,
+       #       revedeți cele spuse mai sus, la pct.ii) de la exemplul [Accesarea paginilor de manual], despre 'comenzile de navigare' disponibile în comanda <code>less</code>. </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>iii)</b> similar, studiați informațiile despre grupurile de utilizatori de pe sistemul pe care lucrați, consultând fișierul <tt>/etc/group</tt>.
+    <br>
+    <div class="stil_observatie_level0">
+	  <i>Observație</i>: "baza de date" despre grupurile de utilizatori, i.e. fișierul <tt>/etc/group</tt>, conține linii de text conforme cu următorul șablon:
+      <div class="stil_output"><i>groupname</i> : x : <i>GID</i>-ul grupului : o eventuală <i>listă de username</i>-uri, ce descrie astfel apartenența utilizatorilor la grupuri secundare</div>
+    </div>
+    <br>
+    <button onclick="myToggle('lab1_ex0-3c')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-3c" class="stil_rezolvare">
+    <b>iii)</b> Similar ca la punctul anterior:
+<pre class="stil_codBash">
+  more /etc/group
+  less /etc/group </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>iv)</b> vizualizați conținutul fișierului <tt>d1/15lines.txt</tt>, creat anterior, afișând doar primele, respectiv ultimele, N linii din el,
+    valoarea N fiind specificată ca argument al comenzii.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentațiile comenzilor head și tail, disponibile pe sistemul Linux
+    pe care lucrați folosind comenzile <code class="stil_cmdBash">man 1 head</code> și respectiv <code class="stil_cmdBash">man 1 tail</code> ,
+    sau accesați variantele online ale acestor documentații, disponibile
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/head.1.html">aici</a> și respectiv
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/tail.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-3d')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-3d" class="stil_rezolvare">
+    <b>iv)</b> O posibilă soluție ar fi:
+<pre class="stil_codBash">
+  cd   # pentru reîntoarcerea în propriul director acasă (doar dacă este necesar)
+  
+  head d1/15lines.txt
+       # Se afișează primele 10 linii de text (N=10 în acest caz)
+
+  head -n 5 d1/15lines.txt
+       # Se afișează primele 5 linii de text
+
+  head -n -5 d1/15lines.txt
+       # Se afișează toate liniile (de la începutul fișierului), exceptând ultimele 5 linii de text
+
+  tail d1/15lines.txt
+       # Se afișează ultimele 10 linii de text (N=10 în acest caz), în ordinea naturală (Atenție: NU în ordine inversată, precum la comanda tac !)
+
+  tail -n 5 d1/15lines.txt
+       # Se afișează ultimele 5 linii de text, în ordinea naturală
+
+  tail -n +5 d1/15lines.txt
+       # Se afișează toate liniile, începând de la a 5-a linie, în ordinea naturală (Practic, se afișează tot fișierul, exceptând primele 4 linii de text !) </pre>
+    </div>
+  </li>
+</ul>
+</p>
+</li>
+
+<li><!-- Problema: lab1_ex0.4-new ---------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[Basic file operations #4]</span><!-- Operații de bază cu fișiere #4 -->
+&nbsp; <b>Exemplificare obținere informații despre fișiere, folosind diverse comenzi</b>.
+<br>
+Scrieți comenzile care ne oferă următoarele informații despre fișiere:
+<ul>
+  <li><b>i)</b> aflați ce fel de conținut au următoarele fișiere (fără să le vizualizați explicit conținutul cu comenzile exemplificate mai sus):<br>
+    <tt>/etc/passwd</tt> , <tt>/usr/bin/write</tt> , <tt>/usr/share/man/man1/write.1.gz</tt> , <tt>/usr/include/fcntl.h</tt> și, respectiv, <tt>/etc</tt>.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii file,
+    disponibilă pe sistemul Linux pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 file</code> ,
+    sau accesați o variantă online a acestei documentații, disponibilă
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/file.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-4a')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-4a" class="stil_rezolvare">
+    <b>i)</b> O posibilă rezolvare ar fi:
+<pre class="stil_codBash">
+  file /etc/passwd
+
+  file /usr/bin/write
+  file -L /usr/bin/write     # -L : opțiunea pentru dereferențiere (i.e., "urmărirea" legăturilor simbolice)
+
+  file /usr/share/man/man1/write.1.gz
+  file -L /usr/share/man/man1/write.1.gz
+
+  file /usr/include/fcntl.h
+
+  file /etc	  # comanda file "recunoaște" și directoare! </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>ii)</b> vizualizați metadatele (i.e., proprietățile) asociate fișierului <tt>/etc/passwd</tt>;
+    apoi afișați doar următoarele metadate asociate acestuia:
+	permisiunile în notație simbolică, dimensiunea în octeți, data ultimei modificări și numele lui.
+    <p><i>Recomandare</i>:
+    mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii stat,
+    disponibilă pe sistemul Linux pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 stat</code> ,
+    sau accesați o variantă online a acestei documentații, disponibilă
+    <a target="_blank" href="https://man7.org/linux/man-pages/man1/stat.1.html">aici</a>.
+    </p>
+    <button onclick="myToggle('lab1_ex0-4b')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-4b" class="stil_rezolvare">
+    <b>ii)</b> O posibilă rezolvare ar fi:
+<pre class="stil_codBash">  stat /etc/passwd </pre>
+    Pentru cerința a doua din enunț:
+<pre class="stil_codBash">  stat -c "%A %s %y %n" /etc/passwd          #  -c : opțiunea "scurtă" pentru formatare </pre>
+    Sau, echivalent:
+<pre class="stil_codBash">  stat --format="%A %s %y %n" /etc/passwd    #  --format= : opțiunea "lungă" pentru formatare </pre>
+    </div>
+	<br><br>
+  </li>
+  <li><b>iii)</b> similar, studiați informațiile despre metadatele asociate fișierului <tt>/etc/group</tt>.
+    <br><br>
+    <button onclick="myToggle('lab1_ex0-4c')">Show / Hide some possible solutions</button>
+    <div id="lab1_ex0-4c" class="stil_rezolvare">
+    <b>iii)</b> Rezolvarea este similară cu cea de la punctul precedent:
+<pre class="stil_codBash">  stat /etc/group </pre>
+    </div>
+  </li>
+</ul>
+</p>
+</li>
+
+
+<li><!-- Problema: lab1_ex1 ---------------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[cut #1]</span>
+&nbsp; <b>Exemplificare selecție de text pe verticală (i.e., pe coloane de text) dintr-un fișier, folosind comanda cut</b>.
+<br>
+Să se scrie comanda care afișează numele de cont și UID-urile tuturor utilizatorilor sistemului.
+<br>
+<small>(Indicație: <span class="stil_hint2">folosiți comanda cut și informațiile din fișierul <tt>/etc/passwd</tt>.</span>)</small>
+</p>
+<p>
+<i>Recomandare</i>: mai întâi, pentru a înțelege exemplele de rezolvare de mai jos, (re)citiți documentația comenzii cut,
+disponibilă pe sistemul Linux pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 cut</code> ,
+sau accesați o variantă online a acestei documentații, disponibilă
+<a target="_blank" href="https://man7.org/linux/man-pages/man1/cut.1.html">aici</a>.
+</p>
+
+<button onclick="myToggle('lab1_ex1')">Show / Hide some possible solutions</button>
+<div id="lab1_ex1" class="stil_rezolvare">
+O primă soluție ar fi:
+<pre class="stil_codBash">  cut -f1,3 -d: /etc/passwd </pre>
+
+Altă soluție -- observați spațiile dintre opțiuni și valorile acestora:
+<pre class="stil_codBash">  cut -f 1,3 -d : /etc/passwd </pre>
+
+Alte soluții -- observați ordinea opțiunilor și argumentelor:
+<pre class="stil_codBash">
+  cut -f1,3 /etc/passwd -d:
+  cut -d: /etc/passwd -f1,3
+  cut /etc/passwd -d: -f1,3 </pre>
+
+Și mai multe soluții -- observați folosirea opțiunilor specificate în formatul lung în locul celui scurt:
+<pre class="stil_codBash">
+  cut --fields=1,3 --delimiter=: /etc/passwd
+  cut --fields 1,3 --delimiter : /etc/passwd </pre>
+
+<i>Avertizare</i>: când folosiți formatul lung de specificare a opțiunilor, comanda va da eroare dacă omiteți semnul egal
+sau spațiul ce desparte numele opțiunii de valoarea asociată:
+<pre class="stil_codBash">
+  cut --fields1,3 --delimiter: /etc/passwd
+  <pre class="stil_output">
+  cut: unrecognized option '--fields1,3'
+  Try `cut --help' for more information.</pre>
+  cut --delimiter: --fields1,3 /etc/passwd
+  <pre class="stil_output">
+  cut: unrecognized option '--delimiter:'
+  Try `cut --help' for more information.</pre>
+</pre>
+</div>
+
+&nbsp;
+
+<button onclick="myToggle('lab1_ex1_obs')">Show / Hide a general remark about these possible solutions</button>
+<p id="lab1_ex1_obs" class="stil_observatie_level0">
+<big>Observație importantă:</big>
+<br>
+Astfel de combinații de specificare a opțiunilor și argumentelor se pot face și pentru exercițiile precedente, <!-- sau cel ce urmează mai jos,-->
+precum și pentru exercițiile din laboratoarele următoare,
+chiar dacă în exercițiile respective, ce sunt însoțite de rezolvări, nu am specificat (și nu voi specifica) explicit acest lucru în rezolvări!
+<br>
+Cu alte cuvinte, uneori am specificat (și voi specifica) doar câte una (sau câteva) dintre combinațiile posibile pentru rezolvarea exercițiului respectiv,
+dar aceasta nu înseamnă că nu mai sunt și alte rezolvări posibile, echivalente cu cea (cele) specificate!
+</p>
+</br></br>
+<div class="stil_observatie_level0">
+<i>Important</i>: mai sus am ilustrat utilizarea a două opțiuni ale comenzii <code>cut</code>, utile atunci când
+"câmpul" (sau "câmpurile") pe care vrem să o/le selectăm din fiecare linie de text a fișierului (sau fișierelor) de prelucrat
+este/sunt de lungime variabilă, și anume:
+<ul>
+<li><tt>-f</tt> sau <tt>--fields</tt> : specifică "câmpul" (sau "câmpurile") ce se vor selecta din fiecare linie de text</li>
+<li><tt>-d</tt> sau <tt>--delimiter</tt> : specifică caracterul folosit ca și delimitator între "câmpuri" consecutive în cadrul liniilor de text.
+</li>
+</ul>
+Voi mai aminti aici alte câteva dintre opțiunile comenzii <code>cut</code>,
+pe care le vom folosi ulterior în exemplele rezolvate din laboratorul #3 pentru a construi diferite lanțuri de comenzi
+(unele dintre acestea vor utiliza și comanda <code>cut</code> pentru a obține funcționalitatea dorită în fiecare caz specific):
+</br>
+<ul>
+<li><tt>-b</tt> sau <tt>--bytes</tt> : se folosește pentru a specifica unul sau mai multe "câmpuri" de lungime fixă (nu variabilă), și care încep de la o poziție fixă în cadrul tuturor liniilor de text ce se vor prelucra
+</li>
+<li><tt>-c</tt> sau <tt>--characters</tt> : la fel, se folosește pentru a specifica unul sau mai multe "câmpuri" de lungime fixă (nu variabilă), și care încep de la o poziție fixă în cadrul tuturor liniilor de text ce se vor prelucra.
+</br><i>Notă</i>: dacă sistemul pe care lucrați este configurat să folosească reprezentarea caracterelor pe 1 octet,
+atunci nu este nicio diferență între efectele folosirii opțiunilor <tt>-c</tt> sau <tt>-b</tt> .
+</li>
+<li><tt>--complement</tt> : afișează restul din fiecare linie de text, excluzând "câmpul" (sau "câmpurile") specificat/e
+</li>
+<li><tt>--output-delimiter</tt> : înlocuiește, în outputul rezultat, caracterul delimitator între "câmpuri" cu un alt caracter
+(sau chiar cu un cuvânt, i.e. o secvență de mai multe caractere)
+</li>
+</ul>
+</div>
+<br><br>
+</li>
+
+
+<li><!-- Problema: lab1_ex2 ---------------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[grep #1]</span>
+&nbsp; <b>Exemplificare selecție de text pe orizontală (i.e., pe linii de text) dintr-un fișier, folosind comanda grep</b>.
+<br>
+Să se scrie comanda care selectează din fișierul <tt>/etc/passwd</tt> doar informațiile despre un utilizator specificat ca argument al comenzii.
+<br>
+<small>(Indicație: <span class="stil_hint2">folosiți comanda grep.</span>)</small>
+</p>
+<p>
+<i>Recomandare</i>: mai întâi, pentru a înțelege exemplul de rezolvare de mai jos, (re)citiți documentația comenzii grep,
+disponibilă pe sistemul Linux pe care lucrați folosind comanda <code class="stil_cmdBash">man 1 grep</code> ,
+sau accesați o variantă online a acestei documentații, disponibilă
+<a target="_blank" href="https://man7.org/linux/man-pages/man1/grep.1.html">aici</a>.
+</p>
+
+<button onclick="myToggle('lab1_ex2')">Show / Hide the solution</button>
+<div id="lab1_ex2" class="stil_rezolvare">
+  O soluție posibilă, unde <i>numeuser</i> este numele utilizatorului care ne interesează:
+  <pre class="stil_codBash">  grep <i>numeuser</i> /etc/passwd </pre>
+  <div class="stil_hidden-text_level1_small-padding"><i>Observație:</i> în acest caz nu putem inversa ordinea celor două argumente ale comenzii grep, căci nu mai obținem același rezultat.</div>
+</div>
+</br></br>
+<div class="stil_observatie_level0">
+<i>Important</i>: voi aminti aici doar câteva dintre opțiunile comenzii <code>grep</code>,
+pe care le vom folosi ulterior în exemplele rezolvate din laboratorul #3 pentru a construi diferite lanțuri de comenzi
+(unele dintre acestea vor utiliza și comanda <code>grep</code> pentru a obține funcționalitatea dorită în fiecare caz specific):
+</br></br>
+<ul>
+<li><tt>-c</tt> sau <tt>--count</tt> : în loc de outputul obișnuit (i.e., afișarea tuturor liniilor care conțin șablonul specificat), afișează doar numărul de linii ce conțin șablonul specificat
+</li>
+<li><tt>-w</tt> sau <tt>--word-regexp</tt> : afișează doar liniile care conțin șablonul specificat ca și cuvânt "întreg",
+i.e. nu este sub-cuvânt într-un cuvânt mai mare.
+</br><i>Notă</i>: prin definiție, un "cuvânt" este o secvență de caractere care sunt litere, cifre sau '_' .
+</li>
+<li><tt>-v</tt> sau <tt>--invert-match</tt> : afișează liniile care NU conțin șablonul specificat
+</li>
+<li><tt>-i</tt> sau <tt>--ignore-case</tt> : face <i>pattern-matching</i> <i>case-insensitive</i>  (i.e., ignoră diferența dintre litere majuscule și minuscule, atât în șablonul specificat, cât și în conținutul fișierului de prelucrat)
+</li>
+<li><tt>-o</tt> sau <tt>--only-matching</tt> : nu afișează în întregime fiecare linie de text ce conține șablonul specificat,
+ci doar partea (nevidă) a liniei ce conține exact șablonul specificat
+</br><i>Notă</i>: este utilă mai ales atunci când șablonul specificat este o expresie regulată, i.e. descrie un set de cuvinte.
+</li>
+<li><tt>-E</tt> sau <tt>--extended-regexp</tt> : interpretează șablonul specificat ca o <i>expresie regulată extinsă</i>
+</br><i>Notă</i>: în mod implicit, sau cu <tt>-G</tt> sau <tt>--basic-regexp</tt>, acesta este interpretat ca o <i>expresie regulată simplă</i>.
+</li>
+<li><tt>-F</tt> sau <tt>--fixed-strings</tt> : interpretează șablonul specificat ca un cuvânt "constant", nu ca o expresie regulată
+</br><i>Notă</i>: în mod implicit, acesta este interpretat ca o <i>expresie regulată simplă</i>.
+</li>
+</ul>
+</div>
+
+</li>
+
+</ol>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<hr style="border-top:3px solid darkblue;">
+<script src="../js/script_toggle.js"></script>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</body>
+</html>

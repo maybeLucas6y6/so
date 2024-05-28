@@ -1,0 +1,3 @@
+/dev/mapper/volgroup0-lv_root / ext4 rw,relatime 0 0
+/dev/mapper/volgroup0-lv_home /home ext4 rw,relatime 0 0
+/dev/nvme0n1p7 /boot ext4 rw,relatime 0 0

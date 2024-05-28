@@ -1,0 +1,804 @@
+﻿<!DocType html>
+<html lang="ro">
+<head>
+  <title>Disciplina SO - Laborator #7 (suport online)</title>
+  <link rel="stylesheet" type="text/css" href="../my_styles.css" />
+    <meta name="description" content="Sisteme de operare - curs și laborator - suport electronic">
+    <meta name="keywords"    content="Operating Systems, Sisteme de operare, Unix, Linux, FII Iași, infoiasi, Cristian Vidrașcu">
+    <meta name="author"      content="Cristian Vidrașcu">
+    <meta charset="utf-8"><!-- pentru diacritice -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<script src="../js/script_include.js"></script>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<body>
+
+<h2><font color="blue">Laborator #7 :</font> suport online &nbsp; ( Îndrumar de laborator )</h2>
+
+<b>Sumar:</b>
+<h3>I) <a href="#sec_1" class="button_href">Programare: procesarea concurentă de fișiere, utilizând lacăte pentru acces exclusiv</a></h3>
+
+<h4>I.1) Recap: <a href="#sec_1a" class="button_href">Reamintirea unor cunoștințe dobândite în lecția practică despre programare C pentru acces exclusiv la fișiere, folosind blocaje pe fișiere</a></h4>
+<h5>&nbsp; &nbsp; &nbsp; &nbsp; Demo: <a href="#sec_1a1" class="button_href">Explicații mai detaliate ale programelor demonstrative referite în lecția practică</a></h5>
+<h5>&nbsp; &nbsp; &nbsp; &nbsp; Re-recap: <a href="#sec_1a2" class="button_href">Recapitularea unor cunoștințe dobândite anterior, despre reprezentările tipurilor de date</a></h5>
+
+<h4>I.2) Exemplificări: <a href="#sec_1b" class="button_href">Exemple de programare a unor probleme de sincronizare cu fișiere, ce utilizează lacăte pentru acces exclusiv (exerciții rezolvate)</a></h4>
+
+<!--h3>II) <a href="#sec_2" class="button_href">Studiul experimental al performanței unor programe C mai complexe</a></h3-->
+
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:5px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1">I) <span class="stil_sumar">Programare: procesarea concurentă de fișiere, utilizând lacăte pentru acces exclusiv</span> :</p>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1a">I.1) <span class="stil_recap">Reamintirea unor cunoștințe dobândite în lecția practică despre programare C pentru acces exclusiv la fișiere, folosind blocaje pe fișiere</span> :</p>
+
+<b>Informații despre procesarea fișierelor în manieră exclusivă în Linux, folosind blocaje pe fișiere:</b>
+<button onclick="myToggle('lab7_recap')">Hide / Show the presentation</button>
+<div id="lab7_recap" style="display:block;" class="stil_prezentare">
+<p>
+(Re)citiți prezentarea cu lecția practică despre programare C pentru acces exclusiv la fișiere, folosind blocaje pe fișiere, disponibilă
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P7_flock_web-ro.pdf">aici</a>.
+</p>
+<p>
+<font color="red">Recomandare:</font>
+<button onclick="myToggle('lab7_recap_bib')">Show / Hide the recommendation</button>
+<div id="lab7_recap_bib" class="stil_bibliografie_suplimentara">
+Nu vă rezumați doar la consultarea prezentării PPT indicate  mai sus;
+citiți și subcapitolul corespunzător din cartea recomandată pentru componenta practică:
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/ManualID-SO_chapters/file+lock.pdf">Cap. 3, §2.1-2.3</a>.
+<br><br>
+<!--
+<i>Notă</i>: o versiune mai veche a acestui material, în format HTML, este disponibilă spre consultare
+<a target="_blank" href="http://students.info.uaic.ro/~so/labs/lock.htm">aici</a>.
+<br><br>
+[ro]-->
+Suplimentar, citiți capitolul 55 din cartea <a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/TLPI1.pdf">[TLPI1]</a>.
+<!--|| [en] <span lang="en">Also, you should read chapter 55 from the book <a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/books/TLPI1.pdf">[TLPI1]</a></span>.-->
+</div>
+</p>
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1a1" class="stil_ex_rezolvate" style="background-color: white;">Demo: Explicații mai detaliate ale programelor demonstrative referite în lecția practică</p>
+
+<p>
+În cele ce urmează voi relua programul demonstrativ ilustrat în lecția practică de mai sus, cu explicații mai detaliate
+pentru fiecare dintre versiunile acestuia prezentate în lecția practică.
+Reamintesc, ideea programului este una foarte simplă: înlocuiește primul caracter '#' întâlnit într-un fișier de date specificat
+(sau anunță ca nu a găsit niciunul).
+<br>
+Executat în manieră <b>independentă</b> (i.e., o singură instanță de execuție, sau mai multe, dar executate secvențial),
+programul este "corect", adică face ceea ce trebuie:
+înlocuiește primul caracter '#' întâlnit în acel fișier de date (sau anunță ca nu a găsit niciunul).
+<br>
+Ceea ce urmărim este însă ca și la execuția în manieră <b>cooperantă</b> (i.e., mai multe instanțe ale programului executate în paralel),
+programul să fie "corect", adică să producă rezultate "corecte", în sensul definit de noi mai sus.
+<br>
+<i>Notă</i>: criteriul de corectitudine mai poate fi reformulat și astfel:
+numărul de caractere '#' din fișier să descrească cu exact numărul de instanțe ale programului ce sunt executate,
+fie în manieră independentă, fie în manieră cooperantă (evident, descreșterea va fi limitată până la valoarea zero,
+e.g. dacă numărul inițial de caractere '#' din fișier este depășit de numărul de instanțe ce sunt executate).
+</p>
+
+<p class="stil_hidden-text_level1_small-padding">
+<i>Observație importantă</i>:
+<br>
+Noi suntem responsabili să definim ce înseamnă că <i>programul produce rezultate "corecte"</i>
+(indiferent de modul de execuție, independentă sau cooperantă, al acestuia),
+definind "corectitudinea" în funcție de natura informațiilor pe care le prelucrăm în program și de scopurile urmărite,
+pentru fiecare problemă în parte.
+<br>
+Astfel, pentru exemplul <span class="stil_ref_ex">[MyCritSec #1]</span> de mai jos,
+spunem că programul este "corect" dacă rezultatul final obținut este în concordanță cu
+rezultatul teoretic al operațiilor de adunare și de scădere executate asupra valorii inițiale a stocului din rezervor.
+<br>
+Iar pentru exemplul <span class="stil_ref_ex">[MyCritSec #2]</span> de mai jos,
+spunem că programul este "corect" dacă rezultatul final este secvența cu EXACT aceleași numere
+care apar și în secvența inițială, dar ORDONATE crescător.
+</p>
+
+<ol>
+
+<li><!-- Program demonstrativ ilustrat în lecția practică ---------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[FirstDemo -- access_v1 &amp; access_v1_nosleep]</span>
+<br>Acest program demonstrativ ilustrează un <i>data race</i> datorat accesului în mod concurent, fără sincronizare, la un fișier cu date.
+<br>Cu alte cuvinte, această versiune a programului nu este "corectă" la execuția în manieră <b>cooperantă</b>,
+deoarece poate produce și rezultate "incorecte", în sensul definit de noi mai sus.
+</p>
+<button onclick="myToggle('lab7_demo1')">Show / Hide the 1st demo example</button>
+<div id="lab7_demo1" class="stil_rezolvare" w3-include-HTML="demo/lab7/ppt_demo1.html">See
+the demo from <a target="_blank" href="demo/lab7/ppt_demo1.html">here</a>.
+</div>
+<br><br>
+</li>
+
+<li><!-- Program demonstrativ ilustrat în lecția practică ---------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[SecondDemo -- access_v2 &amp; access_v2w]</span>
+<br>Acest program demonstrativ ilustrează rezolvarea <i>bug</i>-ului de concurență cauzat de acel <i>data race</i> de la versiunea anterioară
+a programului, utilizând tehnici de sincronizare implementate folosind blocaje pe fișiere pentru accesul exclusiv la acel fișier cu date.
+<br>Cu alte cuvinte, această versiune a programului este "corectă" la execuția în manieră <b>cooperantă</b>,
+deoarece produce doar rezultate "corecte", în sensul definit de noi mai sus.
+Însă, nu este și eficientă, deoarece execuția paralelă a mai multor instanțe este practic "serializată" prin modul de implementare a blocajului
+pe fișier din această versiune.
+</p>
+<button onclick="myToggle('lab7_demo2')">Show / Hide the 2nd demo example</button>
+<div id="lab7_demo2" class="stil_rezolvare" w3-include-HTML="demo/lab7/ppt_demo2.html">See
+the demo from <a target="_blank" href="demo/lab7/ppt_demo2.html">here</a>.
+</div>
+<br><br>
+</li>
+
+<li><!-- Program demonstrativ ilustrat în lecția practică ---------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[ThirdDemo -- access_v3 &amp; access_v4]</span>
+<br>Acest program demonstrativ ilustrează o versiune <b>optimizată (d.p.d.v. al concurenței)</b>, față de versiunea anterioară a programului.
+Mai exact, optimizarea constă în faptul că <u>blocajele se pun numai pe porțiunea de fișier strict necesară și numai pe durata minimă necesară</u>!
+<br>Prima încercare de implementare a acestei optimizări, i.e. versiunea 3 a programului, nu este însă "corectă" la execuția în manieră <b>cooperantă</b>,
+deoarece poate produce și rezultate "incorecte", în sensul definit de noi mai sus. Îi mai lipsește ceva pentru a fi "corectă", lipsă pe care
+am suplinit-o în versiunea 4 a programului, abia aceasta implementând complet optimizarea urmărită și fiind "corectă" la execuția
+în manieră <b>cooperantă</b> (i.e., produce doar rezultate "corecte", în sensul definit de noi mai sus).
+</p>
+<button onclick="myToggle('lab7_demo3')">Show / Hide the 3rd demo example</button>
+<div id="lab7_demo3" class="stil_rezolvare" w3-include-HTML="demo/lab7/ppt_demo3.html">See
+the demo from <a target="_blank" href="demo/lab7/ppt_demo3.html">here</a>.
+</div>
+<br><br>
+</li>
+
+</ol>
+
+</div>
+</div>
+
+<br>
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:2px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1a2">Re-recap: <span class="stil_prolog">Recapitularea unor cunoștințe dobândite anterior, despre reprezentările tipurilor de date</span></p>
+
+<h3>i) Despre cele două reprezentări diferite, <i>binară</i> vs. <i>textuală</i>, ale diverselor tipuri de date</h3>
+
+<h3>ii) Despre funcțiile de conversie între reprezentarea <i>binară</i> și cea <i>textuală</i> ale diverselor tipuri de date</h3>
+
+<p>
+Pentru a (re)citi informațiile despre aceste subiecte, amintite și în suportul de laborator precedent,
+consultați documentul disponibil <a target="_blank" href="suport_lab6_bib2_stdio.pdf">aici</a>.
+</p>
+
+<div class="stil_prezentare">
+<p class="stil_ex_rezolvate" style="background-color: white;">Programe demonstrative pentru conversia între cele două tipuri de reprezentări</p>
+<p>
+Iată și două exemple demonstrative, ce constau în prezentarea unor programe ce vor apela funcțiile de conversie
+între reprezentarea <i>binară</i> și cea <i>textuală</i> (prezentate în documentul referit mai sus)
+pentru a converti o secvență de numere întregi, între cele două reprezentări diferite, <i>binară</i> vs. <i>textuală</i>,
+ale numerelor din secvența respectivă:
+</p>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<ol>
+<li><!-- Program: vechiul bin-write.c de la problema sortării paralele, [MyCritSec #2 : Parallel sorting]  --------------->
+<p><span class="stil_titlu_ex">[txt2bin_write-file]</span>
+<br>Să se scrie un program C care citește o secvență de numere întregi, introduse de la tastatură folosind reprezentarea <i>textuală</i>,
+și le salvează în format <i>binar</i>, într-un fișier al cărui nume îl primește de la linia de comandă.
+<br>
+<small>(<i>Cerință</i>: <span class="stil_hint2">se vor utiliza apelurile de sistem din API-ul POSIX pentru actualizarea fișierului,
+respectiv funcțiile din biblioteca stdio pentru conversia de la reprezentarea <i>textuală</i> la cea <i>binară</i>.</span>)</small>
+</p>
+
+<button onclick="myToggle('lab7_ex2_bw')">Show / Hide the program <font color="blue">txt2bin_write-file.c</font></button>
+<pre id="lab7_ex2_bw" class="stil_rezolvare">
+<div w3-include-MyCode="demo/lab7/txt2bin_write-file.c" class="stil_codC">See the code from <a target="_blank"
+href="demo/lab7/txt2bin_write-file.c">here</a>.</div>
+</pre>
+</li>
+
+<li><!-- Program: vechiul bin-read.c de la problema sortării paralele, [MyCritSec #2 : Parallel sorting]  ---------------->
+<p><span class="stil_titlu_ex">[bin2txt_read-file]</span>
+<br>Să se scrie un program C care citește dintr-un fișier, al cărui nume îl primește de la linia de comandă,
+o secvență de numere întregi, stocate în format <i>binar</i> în acel fișier, și le afișează pe ecran, folosind reprezentarea <i>textuală</i>.
+<br>
+<small>(<i>Cerință</i>: <span class="stil_hint2">se vor utiliza apelurile de sistem din API-ul POSIX pentru accesarea fișierului,
+respectiv funcțiile din biblioteca stdio pentru conversia de la reprezentarea <i>binară</i> la cea <i>textuală</i>.</span>)</small>
+</p>
+
+<button onclick="myToggle('lab7_ex2_br')">Show / Hide the program <font color="blue">bin2txt_read-file.c</font></button>
+<pre id="lab7_ex2_br" class="stil_rezolvare">
+<div w3-include-MyCode="demo/lab7/bin2txt_read-file.c" class="stil_codC">See the code from <a target="_blank"
+href="demo/lab7/bin2txt_read-file.c">here</a>.</div>
+</pre>
+</li>
+</ol>
+<!------------------------------------------------------------------------------------------------------------------------>
+</div>
+
+<p class="stil_observatie_level0">
+<b><i>Observație finală</i>:</b>
+pentru ușurința de programare și pentru eficiența operațiilor I/O cu discul, în exercițiile ce vor urma în acest laborator,
+vă recomand ca tipurile de date numerice să le stocați în fișiere folosind reprezentarea <i>binară</i> a lor,
+care are avantajul că stocarea acestor reprezentări ocupă un număr fix de octeți!
+În acest context, reprezentarea <i>textuală</i> a tipurilor de date numerice nu este cea mai adecvată, și nici cea mai eficientă,
+deoarece stocarea acestei reprezentări ocupă un număr variabil de octeți în fișier, în funcție de valoarea acelui număr!
+</p>
+
+
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:3px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+<p id="sec_1b">I.2) <span class="stil_ex_rezolvate">Exemple de programare a unor probleme de sincronizare cu fișiere, ce utilizează lacăte pentru acces exclusiv (exerciții rezolvate)</span> :</p>
+
+
+<ol>
+
+<li><!-- Problema: lab8_ex2.c -------------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[MyCritSec #1]</span><!-- old ex:3 -->
+<br>
+Implementați <b>problema secțiunii critice</b> prezentată în cursul teoretic #5, în scenariul următor:
+<br>Se consideră, drept resursă partajabilă de mai multe procese, un fișier <i>binar</i>, denumit <tt>peco.bin</tt>, ce conține un număr real.
+Acest număr reprezintă volumul curent de combustibil din rezervorul unei stații PECO.
+Asupra acestei resurse se vor face două tipuri de operațiuni:
+i) de alimentare a autovehiculelor (i.e., de extragere din rezervorul stației a unei anumite cantități de combustibil),
+respectiv
+ii) de re-alimentare a rezervei stației PECO (i.e., de depunere în rezervorul stației a unei anumite cantități de combustibil).
+<br>
+Scrieți un program C care să efectueze diverse operațiuni de depuneri și extrageri la intervale variate de timp,
+cantitățile de combustibil depuse și, respectiv, extrase fiind specificate ca parametri în linia de comandă,
+spre exemplu printr-un apel de forma:
+<br>
+<tt class="stil_cmdBash">UNIX> ./prg_sc1  25500 -10.9 -35.42 3500 -20.45 ...</tt>
+<br>
+Semnificația: se va efectua mai întâi o depunere a cantității de 25500 litri, apoi o extragere a cantității de 10.9 litri, ș.a.m.d.
+</p>
+<p><i>Cerințe</i>:
+<ul>
+  <li>Programul va <b>accesa fișierul resursă în manieră cooperantă</b>,
+  <u>folosind lacăte în scriere pe durata de efectuare a fiecărei operațiuni de actualizare</u> a cantității de combustibil din rezervorul stației,
+  astfel încât să permită execuția simultană a două sau mai multor instanțe ale programului,
+  fără să apară efecte nedorite datorită fenomenelor de <i>data race</i>.
+  <br>
+  Cu alte cuvinte, ideea este de a executa simultan mai multe instanțe ale programului, care vor accesa concurent același fișier și îl vor modifica,
+  coordonându-și însă accesul mutual exclusiv la secțiunile critice din program,
+  astfel încât să nu apară efecte nedorite asupra corectitudinii datelor, datorate fenomenelor de <i>data race</i>.
+  </li>
+  <li>Operațiile de actualizare (i.e., operațiunile de depuneri și extrageri din rezervorul stației)
+  vor fi implementate astfel încât să afișeze pe ecran mesaje explicative despre ceea ce se execută,
+  fiecare mesaj fiind prefixat de PID-ul procesului ce execută respectiva operație de actualizare.
+  </li>
+  <li>Se va pregăti un <b>mediu pentru testare</b>, compus din: programul executabil,
+  fișierul <tt>peco.bin</tt> asupra căruia se vor opera modificările (creat cu ajutorul opțiunii "-i" a programului),
+  câte o secvență de operațiuni de depuneri și extrageri pentru fiecare instanță a executabilului lansată în execuție,
+  precum și un script bash care să lanseze în execuții paralele mai multe instanțe ale programului cu parametrii corespunzători,
+  adică o lansare pentru test ar putea fi de forma:
+  <br>
+  <tt class="stil_cmdBash">UNIX> ./prg-sc1 <i>secvența1</i> &amp; ./prg-sc1 <i>secvența2</i> &amp; ./prg-sc1 <i>secvența3</i> &amp; ...</tt>
+  <br>
+  (Indicație: <span class="stil_hint2">pentru a scrie scriptul bash pomenit mai sus,
+  puteți să luați scriptul de la exercițiul rezolvat
+  <a href="../bash/suport_lab5.html#sec_1b1"><span class="stil_ref_ex">[Run SPMD programs]</span></a>
+  din <a target="_blank" href="../bash/suport_lab5.html">Laboratorul #5</a>
+  și să-l modificați astfel încât să poată transmite secvențele respective ca parametri către instanțele jobului SPMD pe care-l creează.</span>)
+  </li>
+</ul>
+</p>
+
+<div class="stil_observatie_level0">
+Mai întâi, să vedem cum ar trebui abordată rezolvarea unor probleme de genul acesta (i.e., probleme ce solicită scrierea unui program
+ce se va executa sub forma unui job SPMD care va accesa, în manieră concurentă, o anumită resursă partajată de instanțele acelui job) ?
+<br><br>
+
+<button onclick="myToggle('lab7_ex1_general_remarks')">Show / Hide some general remarks about this kind of problems</button>
+<div id="lab7_ex1_general_remarks" class="stil_sugestie_de_rezolvare">
+<p>
+<i>Observația #1</i>:
+toate exercițiile din acest laborator sunt asemănătoare cu <u>programul demonstrativ <a target="_blank"
+href="../../lectures/Linux/demo/flock/access_v4.c"><tt>access</tt></a>, versiunea a 4-a</u>, de la lecția practică
+despre <a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P7_flock_web-ro.pdf">lacăte pe fișiere</a>, i.e. ele presupun
+să scrieți câte un program ce va fi rulat prin lansarea în execuție paralelă a mai multor instanțe ale sale, iar fiecare instanță va face o anumită
+prelucrare, prin acces exclusiv minimal, asupra unui fișier de date partajat de toate aceste instanțe de execuție ale programului respectiv.
+<br>
+Ceea ce diferă de la un exercițiu la altul, este doar operația de prelucrare a conținutului fișierului de date partajat, fiind vorba de operații
+de prelucrare ceva mai complexe decât cea ilustrată în programul demonstrativ de la lecția practică despre
+<a target="_blank" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P7_flock_web-ro.pdf">lacăte pe fișiere</a>.
+</p>
+
+<p>
+<i>Observația #2</i>: în plus, tipurile de date prelucrate de operațiile de procesare cerute de exercițiile din acest laborator,
+sunt și ele mai complexe, i.e. nu doar un caracter, ci numere întregi, sau numere reale, ș.a.
+<br>
+Din acest motiv, reprezentarea <i>textuală</i> a acestor tipuri de date (e.g.,
+un număr întreg în reprezentare <i>textuală</i> este cuvântul format din cifrele sale în baza 10, eventual precedat de semnul '-', etc.)
+nu este cea mai adecvată, deoarece stocarea acestei reprezentări ocupă un număr variabil de octeți, în funcție de valoarea acelui număr!
+<br>
+Pentru eficiența și ușurința de programare, toate aceste tipuri de date trebuie reprezentate <i>în formă binară</i> (e.g.,
+un număr întreg este reprezentat în <i>binar</i> folosind codificarea prin complement față de 2,
+un număr real este reprezentat folosind codificarea în virgulă mobilă, etc.),
+care are avantajul că stocarea acestor reprezentări ocupă un număr fix de octeți
+(e.g., orice întreg se stochează pe exact <tt class="stil_instrC">sizeof(int)</tt> octeți,
+orice număr real se stochează pe exact <tt class="stil_instrC">sizeof(float)</tt> octeți, etc.).
+</p>
+
+<p>
+<i>Atenție</i>: a nu se confunda reprezentarea <i>binară</i> a datelor cu reprezentarea lor <i>textuală</i> în baza 2 (e.g., pentru numere întregi,
+aceasta ar fi cuvântul format din secvența de caractere '0' și '1' corespunzătoare secvenței de biți din reprezentarea <i>binară</i> a acelui întreg).
+</p>
+
+<p>
+<i>Notă</i>: vă reamintesc faptul că primitivele <tt class="stil_instrC">read()</tt> și <tt class="stil_instrC">write()</tt>
+nu efectuează niciun fel de conversie între reprezentarea <i>binară</i> și cea <i>textuală</i>
+în cursul transferului informației între memorie și fișier!
+Și cum în memorie datele sunt stocate folosind reprezentarea <i>binară</i> a lor,
+pentru a putea fi procesate corect de instrucțiunile programului rulat pe procesor,
+aceasta înseamnă că și în fișier va trebui să stocăm datele în reprezentarea <i>binară</i> a lor, pentru
+a le putea transfera între memorie și fișier cu primitivele <tt class="stil_instrC">read()</tt> și <tt class="stil_instrC">write()</tt>
+și, mai ales, pentru a beneficia de avantajele reprezentării <i>binare</i> amintite mai jos.
+</p>
+
+<p>
+<b>Important</b>: prin folosirea reprezentării <i>binare</i> pentru informațiile stocate în fișierul de date partajat și prin accesarea acestuia folosind
+primitivele <tt class="stil_instrC">read()</tt> și <tt class="stil_instrC">write()</tt>,
+obținem ca și avantaj faptul că <b>toate înregistrările din fișierul de date partajat vor avea lungime fixă</b>,
+ceea ce va ușura foarte mult prelucrarea lor concurentă de către mai multe instanțe ale unui job SPMD,
+îndeosebi în situațiile în care fișierul de date partajat va conține o serie de numere (și nu doar un singur număr).
+</p>
+
+<p>
+Spre exemplu, doar în cazul acestei prime probleme, <span class="stil_ref_ex">[MyCritSec #1]</span>,
+fișierul de date partajat conține un singur număr, de tipul <tt>float</tt>.
+Acest număr poate fi stocat, de preferință, în format <i>binar</i>, pentru ca lungimea fișierului să fie invariabilă,
+<tt class="stil_instrC">sizeof(float)</tt>.
+Însă această cerință nu este esențială la această problemă (spre deosebire de celelalte probleme care urmează),
+deoarece aici fișierul va conține la orice moment doar un singur număr, și NUMAI în acest caz
+stocarea lui în fișier utilizând reprezentarea <i>textuală</i> nu va cauza dificultăți la implementarea soluției!
+</p>
+</div>
+</div>
+
+<br>
+
+<button onclick="myToggle('lab7_ex1')">Show / Hide a possible solution</button>
+<div id="lab7_ex1" class="stil_rezolvare">
+<p>
+<i>Observație</i>: repet ceea ce spuneam mai sus, noi suntem responsabili să definim ce înseamnă că <i>programul produce rezultate "corecte"</i>
+(indiferent de modul de execuție, independentă sau cooperantă, al acestuia),
+definind "corectitudinea" în funcție de natura informațiilor pe care le prelucrăm în program și de scopurile urmărite, pentru fiecare problemă în parte.
+&nbsp;
+Astfel, pentru exemplul acesta, spunem că programul este "corect" dacă rezultatul final obținut este în concordanță cu
+rezultatul teoretic al operațiilor de adunare și de scădere executate asupra valorii inițiale a stocului din rezervor.
+</p>
+<p>
+Și acum, să vedem care ar fi <b>strategia de rezolvare</b> a acestei probleme (și a altora asemănătoare) ?
+</p>
+<button onclick="myToggle('lab7_ex1_suggestions')">Show / Hide some suggestions for solving this problem</button>
+
+<div id="lab7_ex1_suggestions" class="stil_sugestie_de_rezolvare">
+<i>Pașii de urmat pentru rezolvarea acestei probleme (și a altora asemănătoare) ar fi următorii</i>:
+<br><br>
+<ul>
+<li><b>Pasul 1</b>: Scrieți mai întâi o variantă a programului cerut, <b>fără</b> folosirea de lacăte pentru acces exclusiv la secțiunea critică din program,
+    și experimentați cu această variantă, astfel:
+    <br>
+    i) întâi depanați programul în manieră secvențială (i.e., executați o singură instanță a programului),
+    pentru a elimina eventualele bug-uri de natură secvențială!
+    <br>
+	ii) după ce ați corectat toate bug-urile de natură secvențială, treceți la testarea programului în context de execuție paralelă și concurentă
+    conform șablonului SPMD, i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD,
+	ca să observați, eventual, efectul unor fenomene de <i>data race</i>,
+	i.e. obținerea de rezultate inconsistente (incorecte).
+    <br><br>
+</li>
+<li><b>Pasul 2</b>: Apoi adăugați, în programul scris la Pasul 1, folosirea de lacăte pentru acces exclusiv la secțiunea critică din program,
+    după ideea din programul
+	<a target="_blank" href="../../lectures/Linux/demo/flock/access_v4.c"><tt>access_v4.c</tt></a> discutat la curs,
+	i.e. astfel încât <u>să blocați doar porțiunea minimă din fișier și doar pe perioada minimă necesară</u>,
+    pentru a asigura excluderea mutuală la execuția secțiunilor critice!
+    <br>
+    Experimentați și cu această variantă, în context de execuție paralelă și concurentă conform șablonului SPMD,
+	i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD,
+    ca să observați dacă mai apar rezultate inconsistente (incorecte) datorate unor fenomene de <i>data race</i>.
+    <br>
+    (<i>Tip</i>: nu ar trebui să mai apară! Aceasta, bineînțeles, dacă nu veți face vreo greșeală la implementarea folosirii lacătelor,
+	conform ideilor expuse mai sus.)
+</li>
+</ul>
+</div>
+
+<p>
+<b>Pasul 1</b>: iată o posibilă soluție, în varianta <b>fără lacăte</b>,
+deci <u>fără garantarea accesului mutual exclusiv la secțiunea critică din program</u>:
+</p>
+
+<button onclick="myToggle('lab7_ex1_step1')">Show / Hide the 1st program</button>
+<pre id="lab7_ex1_step1" class="stil_codC">
+<div w3-include-MyCode="demo/lab7/prg_sc1_fara-lacate.c">See the code from <a target="_blank" href="demo/lab7/prg_sc1_fara-lacate.c">here</a>.</div>
+</pre>
+
+<p>
+<i>Notă</i>: în codul de mai sus am specificat, prin comentarii de tipul // TODO ... ,
+adăugirile necesare pe care trebuie să le faceți în cod, pentru a-l completa cu folosirea de lacăte,
+în scopul garantării accesului mutual exclusiv la secțiunea critică din program!
+<br>
+Butonul următor vă arată codul respectiv cu comentariile <font color="red"> // TODO "subliniate" prin culoarea roșie</font>,
+pentru a le "vedea" mai ușor: 
+</p>
+
+<button onclick="myToggle('lab7_ex1_step1red')">Show / Hide the 1st program with TODO comments in red</button>
+<div id="lab7_ex1_step1red" class="stil_codC" w3-include-HTML="demo/lab7/prg_sc1_fara-lacate.c.html">See
+the code from <a target="_blank" href="demo/lab7/prg_sc1_fara-lacate.c.html">here</a>.
+</div>
+
+<div class="stil_explicatie_detaliata">
+<b>Modul de utilizare / testare a acestei variante de program:</b>
+<p>
+Mai întâi, veți inițializa fișierul partajat, i.e. executând comanda:
+<br>
+<tt class="stil_cmdBash">UNIX> ./prg_sc1 -i</tt>
+<br>
+Eventual, creați și o copie de backup, pe care o veți putea folosi ori de câte ori veți dori să repetați testele folosind o aceeași valoare inițială.
+<br>
+<tt class="stil_cmdBash">UNIX> cp peco.bin peco.bin.bak</tt>
+</p>
+
+<!--
+<p>
+i) Depanați programul în manieră secvențială (i.e., executați o singură instanță a programului), pentru a elimina eventualele bug-uri de natură secvențială!
+</p>
+<p>
+ii) După ce ați corectat toate bug-urile de natură secvențială, treceți la testarea programului în context de execuție paralelă și concurentă
+conform șablonului SPMD, i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD, ca să observați efectul fenomenelor de <i>data race</i>,
+i.e. obținerea de rezultate inconsistente (incorecte).
+</p>
+-->
+<p>
+Presupunând că am corectat toate bug-urile de natură secvențială, trecem la testarea programului în context de execuție paralelă și concurentă
+conform șablonului SPMD, i.e. executăm, <u>de multe ori</u>, programul sub formă de joburi SPMD, ca să observăm efectul fenomenelor de <i>data race</i>,
+i.e. obținerea de rezultate inconsistente (incorecte).
+</p>
+<p>
+Pentru un singur job SPMD, veți lansa simultan în execuție paralelă mai multe instanțe ale programului, fiecare cu propria secvență de actualizări.
+Cu alte cuvinte, veți introduce, la prompterul liniei de comandă, o comandă de forma următoare:
+<br>
+<tt class="stil_cmdBash">UNIX> ./prg_sc1 25500 -10.9 -35.42 3500 -20.45 ... &  ./prg_sc1 -10.5 -34.2 2500 -25.56 ... & ...... & ./prg_sc1 -15.3 -25.5 ... & </tt>
+</p>
+<p>
+La finalul execuției acelui job SPMD, veți dori să aflați cantitatea rămasă în rezervor după seria de actualizări de mai sus, i.e. rulați comanda:
+<br>
+<tt class="stil_cmdBash">UNIX> ./prg_sc1 -o</tt>
+</p>
+<p>
+<b><i>Atenție</i></b>: este posibil ca rezultatul afișat în urma unui test să nu fie cel corect!
+Posibile cauze pentru un rezultat final incorect, datorat fenomenelor de <i>data race</i>, ar fi:
+unele operații de actualizare (i.e., operațiunile de depuneri și extrageri din rezervorul stației) s-ar putea să se "suprapună în timp",
+adică să nu fie executate în manieră atomică. Pentru a înțelege despre ce este vorba,
+revedeți exemplul discutat în cursul teoretic #5 la definiția fenomenului de <i>data race</i>.
+</p>
+<p>
+Așadar, va trebui să verificați corectitudinea cantității rămase în rezervor la finalul execuției acelui job SPMD,
+pentru a vă asigura că nu s-a manifestat vreun <i>data race</i> în cursul execuției acelui job.
+<p>
+<p>
+Iar apoi începeți un nou test:
+reinițializați fișierul partajat (fie cu altă valoare inițială, fie pe baza copiei de backup),
+rulați un nou job SPMD, verificați corectitudinea rezultatului final, ș.a.m.d.
+Realizați un număr cât mai mare de teste și vedeți câte dintre ele eșuează
+(i.e., câte dintre ele produc rezultate incorecte).
+</p> 
+</div>
+
+<p>
+<b>Pasul 2</b>: încercați să completați singuri varianta <b>fără lacăte</b> de mai sus,
+conform comentariilor TODO din cod, pentru a obține varianta a doua, care să folosească lacăte
+pentru <u>garantarea accesului mutual exclusiv la secțiunea critică din program</u> !!!
+</p>
+
+</div>
+<br><br>
+</li>
+
+
+<li><!-- Problema: lab8_ex4.c -------------------------------------------------------------------------------------------->
+<p><span class="stil_titlu_ex">[MyCritSec #2 : Parallel sorting]</span><!-- old ex:1 -->
+<br>
+Să se scrie un program C care să sorteze concurent un fișier, al cărui nume se va da ca parametru în linia de comandă, în felul descris în continuare.
+<br>
+Fișierul va conține o secvență de numere întregi, neordonată. Programul va ordona crescător numerele din fișier folosind algoritmul Bubble-Sort clasic:
+se iterează în buclă parcurgeri ale secvenței de numere de la începutul secvenței spre sfârșitul ei, efectuându-se inversiuni ale perechilor ce nu sunt
+în ordinea 'mai mic decât'. Algoritmul se oprește când la ultima parcurgere nu s-a efectuat nici o inversiune.
+</p>
+<p><i>Cerințe</i>:
+<ul>
+  <li>Pentru sortarea fișierului, se vor lansa în execuție paralelă două (sau mai multe) instanțe ale programului,
+  care vor opera deci simultan asupra fișierului de sortat!
+  Ca urmare, programul va trebui să <b>acceseze fișierul de sortat în manieră cooperantă</b>,
+  <u>folosind lacăte în scriere pe durata de efectuare a fiecărei inversiuni</u> a unei perechi de numere din fișier,
+  pentru a nu apare efecte nedorite datorită fenomenelor de <i>data race</i> (aka <i>race conditions</i>).
+  <br>
+  Cu alte cuvinte, ideea este de a executa simultan mai multe instanțe ale programului, care vor accesa concurent același fișier și îl vor modifica,
+  coordonându-și însă accesul mutual exclusiv la secțiunile critice din program,
+  astfel încât să nu apară efecte nedorite datorită fenomenelor de <i>data race</i>.
+  <br>
+  (Indicație #1: <span class="stil_hint2">pentru eficiența și ușurința de programare, numerele întregi vor fi reprezentate <i>binar</i> în fișier,
+  și nu <i>textual</i>, astfel încât fiecare număr întreg să ocupe exact <tt>sizeof(int)</tt> octeți.
+  În acest fel toate înregistrările din fișier vor avea lungime fixă, ceea ce va ușura foarte mult prelucrarea lor.</span>)
+  </li>
+  <li>Lacătele se vor pune numai pe porțiunea de fișier strict necesară și numai pe durata minimă necesară
+  (asemănător ca la versiunea 4 a programului demonstrativ <a target="_blank"
+  href="../../lectures/Linux/demo/flock/access_v4.c"><tt>access</tt></a>
+  prezentat în lecția practică despre <a target="_blank"
+  href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P7_flock_web-ro.pdf">lacăte pe fișiere</a>).
+  <br>
+  (Indicație #2: <span class="stil_hint2">se vor folosi apelurile de sistem open(), read(), write(), close() și respectiv fcntl()
+  pentru punerea de lacăte pe porțiunile minimale, strict necesare, din fișierul de lucru, pe care lucrează la un moment dat
+  o instanță a programului, iar blocajele vor fi păstrate doar pe durata minimă de timp necesară.</span>)  
+  </li>
+  <li>Se va pregăti un <b>mediu pentru testare</b>, compus din:
+  programul executabil, fișierul de sortat <tt><i>secventa.bin</i></tt> (ce va conține secvența de numere inițială),
+  precum și un script bash care să lanseze în execuții paralele mai multe instanțe ale programului, cu parametrii corespunzători,
+  adică o lansare pentru test ar putea fi de forma:
+  <br>
+  <tt class="stil_cmdBash">UNIX> ./prg-sc2 <i>secventa.bin</i> &amp; ./prg-sc2 <i>secventa.bin</i> &amp; ./prg-sc2 <i>secventa.bin</i> &amp; ...</tt>
+  <br>
+  (Indicație #3: <span class="stil_hint2">pentru a scrie scriptul bash pomenit mai sus,
+  puteți să luați scriptul de la exercițiul rezolvat
+  <a href="../bash/suport_lab5.html#sec_1b1"><span class="stil_ref_ex">[Run SPMD programs]</span></a>
+  din <a target="_blank" href="../bash/suport_lab5.html">Laboratorul #5</a>
+  și să-l modificați astfel încât să transmită același nume de fișier către instanțele jobului SPMD pe care-l creează.
+  Astfel adaptat, scriptul va putea fi invocat printr-o linie de comandă de forma:
+  <br>
+  <tt class="stil_cmdBash">UNIX> ./RunMySPMD.sh ./prg-sc2 5 <i>secventa.bin</i></tt>
+  <br>
+  Evident, în loc de 5, se va putea apela cu un număr întreg pozitiv oarecare, reprezentând numărul de instanțe dorit.</span>)
+  </li>
+</ul>
+</p>
+
+
+<button onclick="myToggle('lab7_ex2')">Show / Hide a possible solution</button>
+<div id="lab7_ex2" class="stil_rezolvare">
+<p>
+Mai întâi, (re)citiți cu atenție observațiile generale și sugestiile de rezolvare date la problema rezolvată
+<span class="stil_ref_ex">[MyCritSec #1]</span> de mai sus!
+</p>
+<p>
+<i>Observație</i>: repet ceea ce spuneam mai sus, noi suntem responsabili să definim ce înseamnă că <i>programul produce rezultate "corecte"</i>
+(indiferent de modul de execuție, independentă sau cooperantă, al acestuia),
+definind "corectitudinea" în funcție de natura informațiilor pe care le prelucrăm în program și de scopurile urmărite, pentru fiecare problemă în parte.
+&nbsp;
+Astfel, pentru exemplul acesta, spunem că programul este "corect" dacă rezultatul final este secvența cu EXACT aceleași numere
+care apar și în secvența inițială, dar ORDONATE crescător.
+</p>
+
+<p>
+Reamintesc care este <b>strategia de rezolvare</b> a acestei probleme:
+<button onclick="myToggle('lab7_ex2_suggestions')">Show / Hide some suggestions for solving this problem</button>
+<div id="lab7_ex2_suggestions" class="stil_sugestie_de_rezolvare">
+<i>Pașii de urmat pentru rezolvarea acestei probleme ar fi următorii</i>:
+<br><br>
+<ul>
+<li><b>Pasul 1</b>: Scrieți mai întâi o variantă a programului de sortare cerut, <b>fără</b> folosirea de lacăte pentru acces exclusiv
+    la secțiunea critică din program, și experimentați cu această variantă, astfel:
+    <br>
+    i) întâi depanați programul în manieră secvențială (i.e., executați o singură instanță a programului),
+    pentru a elimina eventualele bug-uri de natură secvențială!
+    <br>
+    ii) după ce ați corectat toate bug-urile de natură secvențială, treceți la testarea programului în context de execuție paralelă și concurentă
+    conform șablonului SPMD, i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD, ca să observați efectul fenomenelor
+    de <i>data race</i>, i.e. obținerea de rezultate inconsistente (incorecte).
+    <br><br>
+</li> 
+<li><b>Pasul 2</b>: Apoi adăugați, în programul scris la Pasul 1, folosirea de lacăte pentru acces exclusiv la secțiunea critică din program,
+    după ideea din programul
+	<a target="_blank" href="../../lectures/Linux/demo/flock/access_v4.c"><tt>access_v4.c</tt></a> discutat la curs,
+    i.e. astfel încât <u>să blocați doar porțiunea minimă din fișier și doar pe perioada minimă de timp</u>,
+    pentru a asigura excluderea mutuală la execuția secțiunilor critice!
+    <br>
+    Experimentați și cu această variantă, în context de execuție paralelă și concurentă conform șablonului SPMD,
+	i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD,
+    ca să observați dacă mai apar rezultate inconsistente (incorecte) datorate fenomenelor de <i>data race</i>.
+    <br>
+    (<i>Tip</i>: nu ar trebui să mai apară! Aceasta, bineînțeles, dacă nu veți face vreo greșeală la implementarea folosirii lacătelor,
+	conform ideilor expuse mai sus.)
+</li>
+</ul>
+</div>
+</p>
+
+<p>
+Și acum să vedem cum implementăm efectiv ideea de rezolvare expusă mai sus:
+</p>
+
+<p>
+Mai întâi, înainte de a începe sortarea efectivă a fișierului,
+avem nevoie de un program ajutător, care să creeze conținutul inițial al fișierului de date <tt><i>secventa.bin</i></tt>
+(ce va conține o secvență de numere întregi, stocate în format <i>binar</i> în fișier),
+fișier ce va fi utilizat apoi de programul principal de sortare.
+<br>
+În acest sens, putem folosi programul <a target="_blank" href="demo/lab7/txt2bin_write-file.c">txt2bin_write-file.c</a>,
+pe care l-am prezentat în <a href="#sec_1a2">preambulul</a> acestei lecții.
+<br>
+<i>Notă</i>: alternativ, am putea incorpora acest program auxiliar ca și funcționalitate a programului principal, apelată prin opțiunea "-i",
+adică așa cum am procedat la exercițiul rezolvat <span class="stil_ref_ex">[MyCritSec #1]</span> de mai sus.
+</p>
+
+<p>
+La finalul sortării, vom avea nevoie de un al doilea program ajutător, care să ne afișeze pe ecran reprezentarea <i>textuală</i> a numerelor
+ce alcătuiesc secvența de numere pe care o vom obține în urma sortării
+(numere ce sunt stocate în <i>binar</i> în fișierul de date <tt><i>secventa.bin</i></tt>).
+<br>
+În acest sens, putem folosi programul <a target="_blank" href="demo/lab7/bin2txt_read-file.c">bin2txt_read-file.c</a>,
+pe care l-am prezentat în <a href="#sec_1a2">preambulul</a> acestei lecții.
+<br>
+<i>Notă</i>: alternativ, am putea incorpora acest program auxiliar ca și funcționalitate a programului principal, apelată prin
+opțiunea "-o", adică așa cum am procedat la exercițiul rezolvat <span class="stil_ref_ex">[MyCritSec #1]</span> de mai sus.
+</p>
+
+<p>
+<b>Pasul 1</b>: o posibilă implementare fără lacăte (i.e., fără excludere mutuală pentru secțiunile critice din program) ar putea fi următoarea:
+</p>
+<button onclick="myToggle('lab7_ex2_1')">Show / Hide the 1st program</button>
+<pre id="lab7_ex2_1" class="stil_codC">
+<div w3-include-MyCode="demo/lab7/sortare_fara-lacate.c">See the code from <a target="_blank" href="demo/lab7/sortare_fara-lacate.c">here</a>.</div>
+</pre>
+
+<div class="stil_explicatie_detaliata">
+<b>Modul de utilizare / testare a acestei variante de program:</b>
+<p>
+Mai întâi, veți inițializa fișierul de date partajat, i.e. veți executa comanda următoare:
+<br><tt class="stil_cmdBash">UNIX> ./txt2bin_write-file secventa.bin</tt>
+<br>la care veți introduce o secvență de numere întregi, oricât de lungă și de neordonată.
+<br>
+Puteți vizualiza conținutul fișierului <tt><i>secventa.bin</i></tt> creat în urma acestei comenzi, cu orice editor hexa,
+e.g. cu comanda <tt class="stil_cmdBash">mcview secventa.bin</tt> și apăsați tasta F4,
+apoi încercați să "depistați" secvențele <i>little-endian</i> corespunzătoare reprezentărilor <i>binare</i>
+ale numerelor întregi pe care le-ați introdus.
+<br>
+Eventual, creați și o copie de backup, pe care o veți putea folosi ori de câte ori veți dori să repetați testele
+folosind aceeași secvență neordonată de numere drept date inițiale pentru program.
+<br>
+<tt class="stil_cmdBash">UNIX> cp secventa.bin secventa.bak</tt>
+</p>
+
+<!--
+<p>
+i) Depanați programul în manieră secvențială (i.e., executați o singură instanță a programului), pentru a elimina eventualele bug-uri de natură secvențială!
+</p>
+<p>
+ii) După ce ați corectat toate bug-urile de natură secvențială, treceți la testarea programului în context de execuție paralelă și concurentă
+conform șablonului SPMD, i.e. executați, <u>de multe ori</u>, programul sub formă de joburi SPMD, ca să observați efectul fenomenelor de <i>data race</i>,
+i.e. obținerea de rezultate inconsistente (incorecte).
+</p>
+-->
+<p>
+Presupunând că am corectat toate bug-urile de natură secvențială ale programului de sortare,
+trecem la testarea programului în context de execuție paralelă și concurentă conform șablonului SPMD,
+i.e. executăm, <u>de multe ori</u>, programul sub formă de joburi SPMD, ca să observăm efectul fenomenelor de <i>data race</i>,
+i.e. obținerea de rezultate inconsistente (incorecte).
+</p>
+<p>
+Pentru un singur job SPMD, veți lansa simultan în execuție paralelă mai multe instanțe ale programului, fiecare cu același fișier de date.
+Cu alte cuvinte, veți introduce, la prompterul liniei de comandă, o comandă de forma următoare:
+<br>
+<tt class="stil_cmdBash">UNIX> ./sortare_fara-lacate secventa.bin & ./sortare_fara-lacate secventa.bin & ./sortare_fara-lacate secventa.bin & ...</tt>
+<br>
+sau, echivalent, utilizând scriptul adaptat (revedeți Indicația #3 din enunțul problemei), putem apela jobul astfel:
+<br>
+<tt class="stil_cmdBash">UNIX> ./RunMySPMD.sh ./sortare_fara-lacate 5 secventa.bin</tt>
+</p>
+<p>
+La finalul execuției acelui job SPMD, veți dori să aflați care este secvența obținută în urma sortării. Pentru aceasta, rulați comanda următoare:
+<br>
+<tt class="stil_cmdBash">UNIX> ./ bin2txt_read-file secventa.bin</tt>
+</p>
+<p>
+<b><i>Atenție</i></b>: este posibil ca secvența sortată pe care-o veți obține în urma unui test să nu fie cea corectă!
+Exemple de posibile rezultate incorecte, datorate fenomenelor de <i>data race</i>:
+unele numere din secvența inițială s-ar putea să nu mai apară deloc în secvența rezultat,
+iar alte numere s-ar putea să apară în secvența rezultat de mai multe ori decât apar în secvența de intrare.
+</p>
+<p>
+Așadar, va trebui să verificați corectitudinea secvenței sortate obținută la finalul execuției acelui job SPMD,
+pentru a vă asigura că nu s-a manifestat vreun <i>data race</i> în cursul execuției acelui job.
+<p>
+
+<p>
+Iar apoi începeți un nou test:
+reinițializați fișierul partajat (fie cu altă secvență neordonată de numere, fie pe baza copiei de backup),
+rulați un nou job SPMD, verificați corectitudinea rezultatului sortării, ș.a.m.d.
+<br>
+Realizați un număr cât mai mare de teste și vedeți câte dintre ele eșuează
+(i.e., câte dintre ele produc secvențe sortate incorecte).
+</p> 
+</div>
+
+<p>
+<b>Pasul 2</b>: iată și o posibilă implementare cu lacăte (i.e., cu garantarea excluderii mutuale pentru secțiunile critice din program):
+</p>
+<button onclick="myToggle('lab7_ex2_2')">Show / Hide the 2nd program</button>
+<pre id="lab7_ex2_2" class="stil_codC">
+<div w3-include-MyCode="demo/lab7/sortare_cu-lacate.c">See the code from <a target="_blank" href="demo/lab7/sortare_cu-lacate.c">here</a>.</div>
+</pre>
+
+<p>
+<i> Notă</i>: ca să vedeți mai ușor ce am adăugat în codul primei variante pentru a lucra cu lacăte,
+iată codul celei de a doua variante în care <font color="blue">am "subliniat" prin culoare albastră</font>
+adăugirile făcute în codul primei variante:
+</p>
+<button onclick="myToggle('lab7_ex2_3')">Show / Hide the highlighted differences between 2nd program & 1st program</button>
+<div id="lab7_ex2_3" class="stil_codC" w3-include-HTML="demo/lab7/sortare_cu-lacate.c.html">See
+the page from <a target="_blank" href="demo/lab7/sortare_cu-lacate.c.html">here</a>.
+</div>
+
+<div class="stil_explicatie_detaliata">
+<b>Modul de utilizare / testare a acestei variante de program:</b>
+este similar cu cel descris mai sus, la prima variantă de program, cea fără lacăte.
+<br>
+Singurul lucru care se schimbă, este linia de apel a unui job SPMD, și anume:
+<br>
+<tt class="stil_cmdBash">UNIX> ./sortare_cu-lacate secventa.bin & ./sortare_cu-lacate secventa.bin & ./sortare_cu-lacate secventa.bin & ...</tt>
+<br>
+sau, echivalent, utilizând scriptul adaptat (revedeți Indicația #3 din enunțul problemei), putem apela jobul astfel:
+<br>
+<tt class="stil_cmdBash">UNIX> ./RunMySPMD.sh ./sortare_cu-lacate 4 secventa.bin</tt>
+<br>
+</div>
+
+<p>
+<b><i>Observație finală</i>:</b>
+spre deosebire de prima variantă de program, cea fără lacăte,
+de data aceasta, oricâte execuții paralele veți face ale acestei variante de program cu lacăte,
+de fiecare dată secvența sortată pe care-o veți obține va fi cea corectă!
+</p>
+</div>
+<br><br>
+</li>
+
+</ol>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<hr style="border-top:2px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------>
+
+<p class="stil_QandA">
+<i>Întrebare</i>: La ce sunt utile lacătele în citire?
+<br><br>
+<i>Răspuns</i>: Lacătele în citire pot fi deținute simultan de mai multe procese pe o anumită porțiune de fișier,
+dar NU în același timp cu un lacăt în scriere pe aceeași porțiune de fișier!
+Deci putem face citiri simultane SAU o singură scriere, conform șablonului de cooperare CREW
+(concurrent-read-exclusive-write) descris în cursul teoretic #6.
+(A se revedea, în acest sens, și observația de la slide-ul 12/18 din lecția practică
+despre <a target="_blank" style="color:white" href="https://profs.info.uaic.ro/~vidrascu/SO/lectures/Linux/P7_flock_web-ro.pdf">lacăte pe fișiere</a>.)
+<br><br>
+<i>Important</i>: dacă citirile și scrierile pe care le facem în fișier NU sunt <b>atomice</b>, i.e.
+o informație de procesat trebuie citită prin mai multe multe apeluri <tt class="stil_instrC">read()</tt> (e.g.,
+o înregistrare dintr-o bază de date, ce este formată din mai multe câmpuri,
+iar fiecare câmp trebuie citit prin câte un apel <tt class="stil_instrC">read()</tt> individual),
+și/sau ceva similar pentru operațiile de scriere asupra acelei informații ce trebuie procesată,
+atunci este obligatoriu să implementați mecanismul de sincronizare descris la șablonul de cooperare CREW,
+folosind lacăte în citire și în scriere !
+</p>
+<!-- TODO: un exercițiu demo in acest sens; de citit un int binar prin 4 apeluri read() de 1 octet și de scris similar -->
+<p>
+<i>Notă</i>: în <a href="../../labs/C/lab7.html">setul de exerciții propuse spre rezolvare</a>,
+veți găsi și <!--trei--> unele exerciții ce se pretează pentru rezolvare cu șablonul de cooperare CREW.
+</p>
+
+
+
+
+<!------------------------------------------------------------------------------------------------------------------------ >
+<hr style="border-top:3px solid darkblue;">
+<!------------------------------------------------------------------------------------------------------------------------ >
+<p id="sec_2"><span class="stil_set_exercitii">II) Studiul experimental al performanței unor programe C mai complexe</span> :</p>
+
+<p>
+Această secțiune este disponibilă <a href="prg_perf/lab7perf.html">aici</a>.
+</p>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<hr style="border-top:3px solid darkblue;">
+<script src="../js/script_toggle.js"></script>
+<script>includeMyCode();</script>
+<script>includeHTML();</script>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</body>
+</html>
