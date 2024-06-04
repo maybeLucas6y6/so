@@ -1,0 +1,24 @@
+mapare persistenta (cu nume) = din apa de actual fisier de pe disc
+    mmap direct
+
+mapare nepersistenta cu nume = shared map object
+    char* shm_name = "/name0";
+    int fd = shm_open(nume, optiuni, permisiuni) // fix ca la open normal
+    mmap(NULL, 4096, PROTECTII, MAP_SHARED, fd, 0);
+
+mapare (nepersistenta) anonima 
+    mmap direct doar ca faci MAP_SHARED | MAP_ANONYMOUS
+        si la file desc pui -1
+
+pipe 
+    pipe(v[2]);
+    v[0] citire
+    v[1] scriere
+    deschise implicit
+    
+canale fifo
+    mkfifo(nume_fisier, perm /*0600*/);
+    inchise implicit
+    tratezi ca un fisier capetele
+    open()
+    close()
