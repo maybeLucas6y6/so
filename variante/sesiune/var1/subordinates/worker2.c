@@ -11,16 +11,16 @@ void process(int* min_max) {
         exit(1);
     }
 
-    mini_impar = __INT_MAX__;
-    maxi_par = __INT_MAX__ + 1;
+    mini_impar = 99999;
+    maxi_par = -99999;
     while (read(STDIN_FILENO, &res, sizeof(int)) == 4) {
-        if (res % 2 == 0) {
+        if (abs(res) % 2 == 0) {
             if (res > maxi_par) {
                 maxi_par = res;
             }
         }
         else {
-            if (res > mini_impar) {
+            if (abs(res) > mini_impar) {
                 mini_impar = res;
             }
         }
@@ -31,20 +31,22 @@ void process(int* min_max) {
 }
 
 int main(int argc, char* argv[]) {
-    printf("worker2\n");
-    return 0;
-    int fd_r_shmap = open("w2_to_sup", O_RDONLY | O_CREAT, 0600);
+    int fd_r_shmap = shm_open("w2_to_sup", O_RDWR | O_CREAT, 0600);
     if (fd_r_shmap == -1) {
         perror("Eroare la open");
         exit(4);
     }
-    int* min_max = mmap(NULL, 8, PROT_WRITE, MAP_SHARED, fd_r_shmap, 0);
+    int* min_max = mmap(NULL, 8, PROT_READ | PROT_WRITE, MAP_SHARED, fd_r_shmap, 0);
     if (min_max == MAP_FAILED) {
         perror("Eroare la mmap");
         exit(5);
     }
 
     process(min_max);
+
+    close(STDIN_FILENO);
+    close(fd_r_shmap);
+    munmap(min_max, 8);
 
     return 0;
 }

@@ -16,19 +16,20 @@ void parseaza_fisier(const char* filename, int fifo) {
         exit(5);
     }
 
-    printf("Test\n");
     while (1) {
         char buf[64] = { 0 };
         int line_len = 0;
-        printf("test\n");
-        while (read(fd, buf + line_len, sizeof(char)) > 0) {
+        int bytes_read = 0;
+        while ((bytes_read = read(fd, buf + line_len, sizeof(char))) > 0) {
             if (buf[line_len] == '\n') {
                 buf[line_len] = 0;
                 break;
             }
             line_len++;
         }
-        printf("%s\n", buf);
+        if (bytes_read == 0 || bytes_read == -1) {
+            break;
+        }
 
         char* t1 = NULL, *t2 = NULL, *op = NULL;
         char* p = strtok(buf, " ");
@@ -49,17 +50,16 @@ void parseaza_fisier(const char* filename, int fifo) {
         it1 = atoi(t1);
         it2 = atoi(t2);
         write(fifo, &it1, sizeof(int));
-        write(fifo, &op, sizeof(char));
+        write(fifo, op, sizeof(char));
         write(fifo, &it2, sizeof(int));
     }
 }
 
 void printeaza_date(int* min_max) {
-    printf("min %d max %d\n", min_max[0], min_max[1]);
+    printf("min %d max %d sum %d", min_max[0], min_max[1], min_max[0] + min_max[1]);
 }
 
 int main(int argc, char* argv[]) {
-    printf("alo?");
     if (argc != 2) {
         printf("Usage: ./supervisor path");
         exit(1);
@@ -78,22 +78,32 @@ int main(int argc, char* argv[]) {
         exit(3);
     }
 
-    // ocreat?
-    int fd_r_shmap = open("w2_to_sup", O_RDONLY | O_CREAT, 0600);
+    // ocreat? rdwr?
+    int fd_r_shmap = shm_open("w2_to_sup", O_RDWR | O_CREAT, 0600);
     if (fd_r_shmap == -1) {
         perror("Eroare la open");
         exit(4);
     }
-    int* min_max = mmap(NULL, 8, PROT_READ, MAP_SHARED, fd_r_shmap, 0);
+    // protwrite?
+    int* min_max = mmap(NULL, 8, PROT_READ | PROT_WRITE, MAP_SHARED, fd_r_shmap, 0);
     if (min_max == MAP_FAILED) {
         perror("Eroare la mmap");
         exit(5);
     }
 
-    parseaza_fisier(argv[1], fd_w_fifo);
-    printeaza_date(min_max);
+    if (ftruncate(fd_r_shmap, sizeof(int) * 2) == -1) {
+        perror("Eroare la ftruncate");
+        exit(6);
+    }
 
+    parseaza_fisier(argv[1], fd_w_fifo);
     close(fd_w_fifo);
+
+    sleep(1);
+
+    printeaza_date(min_max);
     close(fd_r_shmap);
+    munmap(min_max, 8);
+
     return 0;
 }

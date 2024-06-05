@@ -43,6 +43,7 @@ void citire_operatii(int fd, int pipe) {
             case '-': res = t1 - t2; break;
             case '*': res = t1 * t2; break;
             case '/': res = t1 / t2; break;
+            default: break;
         }
 
         if (write(pipe, &res, sizeof(int)) == -1) {
@@ -53,7 +54,6 @@ void citire_operatii(int fd, int pipe) {
 }
 
 int main(int argc, char* argv[]) {
-    printf("worker1\n");
     int w1_to_w2[2] = { 0 };
     if (pipe(w1_to_w2) == -1) {
         perror("Eroare la pipe");
@@ -72,13 +72,12 @@ int main(int argc, char* argv[]) {
             perror("Eroare la dup2");
             exit(3);
         }
-        printf("incerc sa fac worker2\n");
-        execl("worker2", "worker2", NULL);
+        close(w1_to_w2[0]);
+        execl("subordinates/worker2", "worker2", NULL);
 
         exit(69);
     }
 
-    close(w1_to_w2[0]);
 
     if (mkfifo("sup_to_w1", 0600) == -1) {
         if (errno != EEXIST) {
@@ -87,15 +86,16 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    int fd_r_fifo = open("sup_to_w1", O_WRONLY);
+    int fd_r_fifo = open("sup_to_w1", O_RDONLY);
     if (fd_r_fifo == -1) {
         perror("Eroare la open");
         exit(5);
     }
 
     citire_operatii(fd_r_fifo, w1_to_w2[1]);
-    close(w1_to_w2[1]);
 
+    close(w1_to_w2[0]);
+    close(w1_to_w2[1]);
     close(fd_r_fifo);
     return 0;
 }
