@@ -5,15 +5,18 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int n, ok = 0, ticks = 0;
+int n, ok = 0, ticks = 0, quit = 0;
 
 void handle_alarm(int sig_code) {
     ticks++;
-    if (!ok && ticks == 5) {
+    if (!quit && ticks == 5) {
         printf("Ies\n");
-        exit(69);
+        exit(68);
     }
-    printf("Scrie ceva bai\n");
+    else if (!ok) {
+        printf("Scrie\n");
+    }
+    ok = 0;
     alarm(n);
 }
 
@@ -40,6 +43,7 @@ int main(int argc, char* argv[]) {
     char buf = 0;
     while (read(STDIN_FILENO, &buf, sizeof(char)) > 0) {
         ok = 1;
+        quit = 1;
         write(fd, &buf, sizeof(char));
     }
     close(fd);

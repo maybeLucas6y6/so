@@ -33,6 +33,13 @@ void selectare_pereche(int w1_to_w2, int* w2_to_sup) {
             w2_to_sup[0] = t1;
             w2_to_sup[1] = t2;
         }
+        /*
+        printf("w2: %d %d %d %d\n",
+                t1,
+                t2,
+                dif,
+                dif_max);
+                */
     }
 }
 

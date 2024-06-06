@@ -28,8 +28,6 @@ void parseaza_perechi_coprime(int fd_fifo_sup_to_w1) {
             break;
         }
 
-        printf("worker1: %d %d\n", t1, t2);
-
         int a = MAX(t1, t2), b = MIN(t1, t2);
         while (a != b) {
             if (a > b) {
@@ -54,13 +52,14 @@ void parseaza_perechi_coprime(int fd_fifo_sup_to_w1) {
 }
 
 int main(int argc, char* argv[]) {
-    if (mkfifo("sup_to_w1_var2", 0600) == -1) {
+    if (mkfifo("sup_to_w1", 0600) == -1) {
         if (errno != EEXIST) {
             perror("Eroare la mkfifo");
             exit(1);
         }
+
     }
-    int fd_fifo_sup_to_w1 = open("sup_to_w1_var2", O_RDONLY);
+    int fd_fifo_sup_to_w1 = open("sup_to_w1", O_RDONLY);
     if (fd_fifo_sup_to_w1 == -1) {
         perror("Eroare la open worker1 fifo");
         exit(2);

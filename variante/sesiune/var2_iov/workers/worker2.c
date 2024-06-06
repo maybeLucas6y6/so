@@ -7,31 +7,22 @@
 int selectarePereche(int fdR, int* shm_obj){
     int difMax = -1;
     while(1){
-
         int t1 = 0;
         int t2 = 0;
-
         int bytes_read = 0;
-
         bytes_read = read(fdR,&t1,sizeof(int));
-        
         if(bytes_read != sizeof(int)){
-            //printf("Am atins EOF!");
             return 0;
         }
-
         if(bytes_read == -1){
             perror("Eroare la citire!");
             exit(7);
         }
 
         bytes_read = read(fdR,&t2,sizeof(int));
-
         if(bytes_read != sizeof(int)){
-            //printf("Am atins EOF");
             return 0;
         }
-
         if(bytes_read == -1){
             perror("Eroare la citire!");
             exit(7);
@@ -50,9 +41,6 @@ int selectarePereche(int fdR, int* shm_obj){
 
 
 int main(int argc, char* argv[]){
-
-
-
     int w1_to_w2[2];
     if(-1 == pipe(w1_to_w2)){
         perror("Eroare la crearea piep-ului");
@@ -103,10 +91,8 @@ int main(int argc, char* argv[]){
         }
 
         selectarePereche(w1_to_w2[0],shm_obj);
-        close(w1_to_w2[0]);
 
+        close(w1_to_w2[0]);
         munmap(shm_obj, 2*sizeof(int));
     }
-
-
 }

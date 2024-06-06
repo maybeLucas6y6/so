@@ -5,34 +5,26 @@
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+
 int parseazaPerechi(int fd){
-
     while(1){
-
         int t1 = 0;
         int t2 = 0;
-
         int bytes_read = 0;
 
         bytes_read = read(fd,&t1,sizeof(int));
-        
         if(bytes_read != sizeof(int)){
-            //printf("Am atins EOF!");
             return 0;
         }
-
         if(bytes_read == -1){
             perror("Eroare la citire!");
             exit(7);
         }
 
         bytes_read = read(fd,&t2,sizeof(int));
-
         if(bytes_read != sizeof(int)){
-            //printf("Am atins EOF");
             return 0;
         }
-
         if(bytes_read == -1){
             perror("Eroare la citire!");
             exit(7);
@@ -66,7 +58,6 @@ int parseazaPerechi(int fd){
 
 
 int main(int argc, char* argv[]){
-
     if(-1 == mkfifo("sup_to_w1", 0600)){
         if(errno!=EEXIST){
             perror("Eroare la crearea fifoului");
@@ -75,7 +66,6 @@ int main(int argc, char* argv[]){
     }
 
     int fdRF;
-
     fdRF = open("sup_to_w1", O_RDONLY);
     if(fdRF == -1){
         perror("Eroare la deschiderea fifoului!");
@@ -83,6 +73,8 @@ int main(int argc, char* argv[]){
     }
 
     parseazaPerechi(fdRF);
+
     close(fdRF);
     close(STDOUT_FILENO);
+    return 0;
 }

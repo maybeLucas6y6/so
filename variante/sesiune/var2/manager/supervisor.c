@@ -20,13 +20,17 @@ void parseaza_fisier(char* filename, int fd_fifo_sup_to_w1) {
         int line_len = 0;
         int bytes_read = 0;
         while ((bytes_read = read(fd, buf + line_len, sizeof(char))) > 0) {
+            if (bytes_read == -1 || bytes_read != 1) {
+                perror("Eroare la read");
+                exit(24);
+            }
             if (buf[line_len] == '\n') {
                 buf[line_len] = 0;
                 break;
             }
             line_len++;
         }
-        if (bytes_read == 0 || bytes_read == -1) {
+        if (bytes_read == 0) {
             break;
         }
 
@@ -68,13 +72,13 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    if (mkfifo("sup_to_w1_var2", 0600) == -1) {
+    if (mkfifo("sup_to_w1", 0600) == -1) {
         if (errno != EEXIST) {
             perror("Eroare la mkfifo");
             exit(2);
         }
     }
-    int fd_fifo_sup_to_w1 = open("sup_to_w1_var2", O_WRONLY);
+    int fd_fifo_sup_to_w1 = open("sup_to_w1", O_WRONLY);
     if (fd_fifo_sup_to_w1 == -1) {
         perror("Eroare la open");
         exit(3);

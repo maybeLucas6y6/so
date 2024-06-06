@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
+
 int parseazaFisier(char* filename, int fd){
 
     int fdFis = open(filename, O_RDONLY);
@@ -75,7 +76,6 @@ void citesteRezultate(int* shm_obj){
 
 
 int main(int argc, char* argv[]){
-
     if(argc != 2){
         printf("Usage: ./supervisor [path]");
         exit(1);
@@ -118,7 +118,10 @@ int main(int argc, char* argv[]){
 
     parseazaFisier(argv[1],fdRF);
     close(fdRF);
+
     sleep(1);
+
     citesteRezultate(shm_obj);
     munmap(shm_obj,2*sizeof(int));
+    return 0;
 }
