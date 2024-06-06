@@ -39,11 +39,11 @@ void parseaza_perechi_coprime(int fd_fifo_sup_to_w1) {
         }
 
         if (a == 1) {
-            if (write(STDOUT_FILENO, &t1, sizeof(int) == -1)) {
+            if (write(STDOUT_FILENO, &t1, sizeof(int)) == -1) {
                 perror("Eroare la write");
                 exit(5);
             }
-            if (write(STDOUT_FILENO, &t2, sizeof(int) == -1)) {
+            if (write(STDOUT_FILENO, &t2, sizeof(int)) == -1) {
                 perror("Eroare la write");
                 exit(6);
             }

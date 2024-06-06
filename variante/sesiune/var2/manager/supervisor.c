@@ -19,7 +19,7 @@ void parseaza_fisier(char* filename, int fd_fifo_sup_to_w1) {
         char buf[64] = { 0 };
         int line_len = 0;
         int bytes_read = 0;
-        while ((bytes_read = read(fd, buf + line_len, sizeof(char))) > 0) {
+        while ((bytes_read = read(fd, &buf[line_len], sizeof(char))) > 0) {
             if (bytes_read == -1 || bytes_read != 1) {
                 perror("Eroare la read");
                 exit(24);

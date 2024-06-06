@@ -8,7 +8,7 @@ void selectare_pereche(int w1_to_w2, int* w2_to_sup) {
     int dif_max = 0;
     while (1) {
         int t1 = 0, t2 = 0;
-        int bytes_read = 0;
+        ssize_t bytes_read = 0;
         bytes_read = read(w1_to_w2, &t1, sizeof(int));
         if (bytes_read == -1) {
             perror("Eroare la read");
@@ -33,13 +33,6 @@ void selectare_pereche(int w1_to_w2, int* w2_to_sup) {
             w2_to_sup[0] = t1;
             w2_to_sup[1] = t2;
         }
-        /*
-        printf("w2: %d %d %d %d\n",
-                t1,
-                t2,
-                dif,
-                dif_max);
-                */
     }
 }
 
