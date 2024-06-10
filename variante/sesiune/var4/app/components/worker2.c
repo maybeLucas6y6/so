@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
 struct char_freq {
     char c;
@@ -15,6 +16,7 @@ struct char_freq {
 };
 
 void numara_consoane_vocale(int w1_to_w2, char* w2_to_sup) {
+    printf("w2 incep sa citesc de la w1 %ld\n", time(NULL));
     struct char_freq voc_max = { 'z', 0 }, cons_min = { 'z', 9999 };
     while (1) {
         struct char_freq buf;
@@ -39,9 +41,12 @@ void numara_consoane_vocale(int w1_to_w2, char* w2_to_sup) {
             }
         }
     }
+    printf("w2 terminat de citit de la w1 %ld\n", time(NULL));
 
+    printf("w2 incep sa trimit la sup %ld\n", time(NULL));
     memcpy(w2_to_sup, &voc_max, sizeof(struct char_freq));
     memcpy(w2_to_sup + sizeof(struct char_freq), &cons_min, sizeof(struct char_freq));
+    printf("w2 am term de trimis la sup %ld\n", time(NULL));
 }
 
 int main(int argc, char* argv[]) {
@@ -57,7 +62,7 @@ int main(int argc, char* argv[]) {
         exit(2);
     }
 
-    int w2_to_sup = shm_open("w2_to_sup", O_RDWR | O_CREAT, 0600);
+    int w2_to_sup = shm_open("w2_to_sup", O_RDWR | O_CREAT | O_TRUNC, 0600);
     if (w2_to_sup == -1) {
         perror("Eroare la shm_open");
         exit(3);
@@ -77,5 +82,6 @@ int main(int argc, char* argv[]) {
     munmap(map, 2 * sizeof(struct char_freq));
     close(w2_to_sup);
     close(w1_to_w2);
+    printf("w2 exit\n");
     return 0;
 }

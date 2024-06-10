@@ -8,8 +8,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
 void calc_freq(int sup_to_w1, int w1_to_w2) {
+    printf("w1 incep sa citesc de la sup %ld\n", time(NULL));
     int freq[26] = { 0 };
     while (1) {
         char buf = 0;
@@ -24,7 +26,9 @@ void calc_freq(int sup_to_w1, int w1_to_w2) {
 
         freq[tolower(buf) - 'a']++;
     }
+    printf("w1 terminat de citit de la sup %ld\n", time(NULL));
 
+    printf("w1 incep sa scriu la sup %ld\n", time(NULL));
     struct char_freq {
         char c;
         int f;
@@ -40,6 +44,7 @@ void calc_freq(int sup_to_w1, int w1_to_w2) {
             }
         }
     }
+    printf("w1 terminat de scris la sup %ld\n", time(NULL));
 }
 
 int main(int argc, char* argv[]) {
@@ -88,5 +93,6 @@ int main(int argc, char* argv[]) {
 
     close(sup_to_w1[0]);
     close(w1_to_w2);
+    printf("w1 exit\n");
     return 0;
 }

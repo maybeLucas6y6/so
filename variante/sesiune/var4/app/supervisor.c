@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
 
 struct char_freq {
     char c;
@@ -39,12 +40,18 @@ void send_file(char* filename) {
         }
     }
     close(fd);
+    close(3);
 }
 
 void show_result(char* map) {
     struct char_freq voc_max, cons_min;
-    memcpy(&voc_max, map, sizeof(struct char_freq));
-    memcpy(&cons_min, map + sizeof(struct char_freq), sizeof(struct char_freq));
+    while (1) {
+        memcpy(&voc_max, map, sizeof(struct char_freq));
+        memcpy(&cons_min, map + sizeof(struct char_freq), sizeof(struct char_freq));
+        if (voc_max.f > 0 || cons_min.f > 0) {
+            break;
+        }
+    }
     printf("voc %c max %d\ncons %c min %d\n",
             voc_max.c,
             voc_max.f,
@@ -53,7 +60,7 @@ void show_result(char* map) {
 }
 
 int main(int argc, char* argv[]) {
-    int w2_to_sup = shm_open("w2_to_sup", O_RDWR | O_CREAT, 0600);
+    int w2_to_sup = shm_open("w2_to_sup", O_RDWR | O_CREAT | O_TRUNC, 0600);
     if (w2_to_sup == -1) {
         perror("Eroare la shm_open");
         exit(1);
@@ -68,13 +75,18 @@ int main(int argc, char* argv[]) {
         exit(3);
     }
 
+    printf("sup incep sa scriu la w1 %ld\n", time(NULL));
     send_file(argv[1]);
+    printf("sup terminat de scris la w1 %ld\n", time(NULL));
 
-    sleep(1);
+    //sleep(1);
 
+    printf("sup incep sa citesc de la w2 %ld\n", time(NULL));
     show_result(map);
+    printf("sup terminat de citit de la w2 %ld\n", time(NULL));
 
     munmap(map, 2 * (sizeof(int) + sizeof(char)));
     close(w2_to_sup);
+    printf("sup exit\n");
     return 0;
 }
